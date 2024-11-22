@@ -1,20 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+// Import your screens
+import CheckInScreen from './screens/CheckInScreen'; // First screen
+import VisitorInScreen from './screens/VisitorInScreen'; // Second screen
+import ConfirmationScreen from './screens/ConfirmationScreen'; // Last screen
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="CheckIn"
+        screenOptions={{
+          headerShown: false, // Hide default headers for a cleaner UI
+        }}
+      >
+        <Stack.Screen name="CheckIn" component={CheckInScreen} />
+        <Stack.Screen name="VisitorIn" component={VisitorInScreen} />
+        <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
