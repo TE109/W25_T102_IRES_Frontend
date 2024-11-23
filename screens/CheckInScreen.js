@@ -1,10 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
 
 const CheckInScreen = ({ navigation }) => {
   const handleVisitAppointment = () => {
-    // Navigate to the Visit/Appointment screen or handle logic
     navigation.navigate('VisitorInScreen');
   };
 
@@ -12,9 +11,9 @@ const CheckInScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Check-In</Text>
       <Text style={styles.subtitle}>What brings you in today?</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('VisitorIn')}>
+      <Button style={styles.button} onPress={() => navigation.navigate('VisitorIn')}>
         <Text style={styles.buttonText}>Visit/Appointment</Text>
-      </TouchableOpacity>
+      </Button>
     </View>
   );
 };
@@ -24,7 +23,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FAF9F6', // Matching the light beige color
+    backgroundColor: '#FAF9F6', 
   },
   title: {
     fontSize: 28,
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   button: {
-    backgroundColor: '#D3D3D3', // Light gray color for the button
+    backgroundColor: '#D3D3D3',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 8,

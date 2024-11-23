@@ -1,18 +1,18 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 const ConfirmationScreen = ({ navigation }) => {
   const handleMainScreen = () => {
-    navigation.navigate('CheckIn'); // Navigate back to the main screen
+    navigation.navigate('CheckIn'); 
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Visitor-In</Text>
       <Text style={styles.message}>Correct access code</Text>
-      <TouchableOpacity style={styles.button} onPress={handleMainScreen}>
+      <Button style={styles.button} onPress={handleMainScreen}>
         <Text style={styles.buttonText}>Main Screen</Text>
-      </TouchableOpacity>
+      </Button>
     </View>
   );
 };
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FAF9F6', // Light beige background
+    backgroundColor: '#FAF9F6', 
     paddingHorizontal: 20,
   },
   title: {
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   button: {
-    backgroundColor: '#D3D3D3', // Light gray button
+    backgroundColor: '#D3D3D3',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 8,
