@@ -1,8 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
-// Import your screens
 import CheckInScreen from './screens/CheckInScreen'; 
 import VisitorInScreen from './screens/VisitorInScreen'; 
 import ConfirmationScreen from './screens/ConfirmationScreen'; 
