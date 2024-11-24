@@ -28,9 +28,10 @@ const DeliveryScreen = ({ navigation }) => {
         onChangeText={setPhoneNumber}
         maxLength={10}
       />
+      <View style={styles.buttonContainer}>
       <Button title="Back" style={styles.button} onPress={handleBack}/>
       <Button title="Enter" style={styles.button} onPress={handleEnter}/>
-        
+      </View>
       
     </View>
   );
@@ -43,6 +44,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FAF9F6',
     paddingHorizontal: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
   },
   title: {
     fontSize: 28,
