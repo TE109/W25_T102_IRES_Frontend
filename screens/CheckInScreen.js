@@ -1,20 +1,26 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-
+import { View, Text, StyleSheet, Button } from 'react-native';
 
 const CheckInScreen = ({ navigation }) => {
   const handleVisitAppointment = () => {
-    // Navigate to the Visit/Appointment screen or handle logic
     navigation.navigate('VisitorInScreen');
+  };
+
+  const handleDelivery = () => {
+    navigation.navigate('DeliveryScreen');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Check-In</Text>
       <Text style={styles.subtitle}>What brings you in today?</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('VisitorIn')}>
-        <Text style={styles.buttonText}>Visit/Appointment</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <Button title="Visit/Appointment" style={styles.button} onPress={handleVisitAppointment}/>
+          
+        <Button title="Delivery" style={styles.button} onPress={handleDelivery}/>
+        
+        
+      </View>
     </View>
   );
 };
@@ -24,24 +30,30 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FAF9F6', // Matching the light beige color
+    backgroundColor: '#FAF9F6',
+    paddingHorizontal: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   subtitle: {
     fontSize: 18,
     color: '#333',
-    marginBottom: 30,
+    marginBottom: 40,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '80%',
   },
   button: {
-    backgroundColor: '#D3D3D3', // Light gray color for the button
+    backgroundColor: '#D3D3D3',
     paddingVertical: 15,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     borderRadius: 8,
-    elevation: 3,
+    marginHorizontal: 10,
   },
   buttonText: {
     fontSize: 16,

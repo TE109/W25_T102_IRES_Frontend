@@ -1,18 +1,20 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
-const ConfirmationScreen = ({ navigation }) => {
+const ConfirmationScreen = ({ navigation, route }) => {
+  const { type } = route.params;
+
   const handleMainScreen = () => {
-    navigation.navigate('CheckIn'); // Navigate back to the main screen
+    navigation.navigate('CheckIn');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Visitor-In</Text>
-      <Text style={styles.message}>Correct access code</Text>
-      <TouchableOpacity style={styles.button} onPress={handleMainScreen}>
-        <Text style={styles.buttonText}>Main Screen</Text>
-      </TouchableOpacity>
+      <Text style={styles.title}>Confirmation</Text>
+      <Text style={styles.message}>Correct access code!</Text>
+      <Button title="Main Screen" style={styles.button} onPress={handleMainScreen}/>
+       
+      
     </View>
   );
 };
@@ -22,26 +24,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FAF9F6', // Light beige background
+    backgroundColor: '#FAF9F6',
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   message: {
-    fontSize: 20,
+    fontSize: 18,
     textAlign: 'center',
     color: '#333',
-    marginBottom: 40,
+    marginBottom: 20,
   },
   button: {
-    backgroundColor: '#D3D3D3', // Light gray button
+    backgroundColor: '#D3D3D3',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 8,
-    elevation: 3,
   },
   buttonText: {
     fontSize: 16,
