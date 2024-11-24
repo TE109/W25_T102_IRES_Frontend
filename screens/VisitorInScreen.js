@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity  } from 'react-native';
 
 const VisitorInScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -38,12 +38,12 @@ const VisitorInScreen = ({ navigation }) => {
         <button style={styles.button} onPress={handleBack}>
           <Text style={styles.buttonText}>Back</Text>
         </button>
-        <button
+        <TouchableOpacity 
           style={[styles.button, phoneNumber ]} 
           onPress={() => navigation.navigate('Confirmation')}
           title='Enter'
         >          
-        </button>
+        </TouchableOpacity >
       </View>
     </View>
   );

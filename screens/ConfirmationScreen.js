@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity  } from 'react-native';
 
 const ConfirmationScreen = ({ navigation }) => {
   const handleMainScreen = () => {
@@ -10,9 +10,9 @@ const ConfirmationScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Visitor-In</Text>
       <Text style={styles.message}>Correct access code</Text>
-      <Button style={styles.button} onPress={handleMainScreen}>
+      <TouchableOpacity  style={styles.button} onPress={handleMainScreen}>
         <Text style={styles.buttonText}>Main Screen</Text>
-      </Button>
+      </TouchableOpacity >
     </View>
   );
 };

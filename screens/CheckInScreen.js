@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity  } from 'react-native';
 
 
 const CheckInScreen = ({ navigation }) => {
@@ -11,9 +11,9 @@ const CheckInScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Check-In</Text>
       <Text style={styles.subtitle}>What brings you in today?</Text>
-      <Button style={styles.button} onPress={() => navigation.navigate('VisitorIn')}>
+      <TouchableOpacity  style={styles.button} onPress={() => navigation.navigate('VisitorIn')}>
         <Text style={styles.buttonText}>Visit/Appointment</Text>
-      </Button>
+      </TouchableOpacity >
     </View>
   );
 };
