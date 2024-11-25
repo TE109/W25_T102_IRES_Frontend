@@ -14,7 +14,7 @@ const DeliveryScreen = ({ navigation }) => {
   };
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack(); 
   };
   return (
     <View style={styles.container}>

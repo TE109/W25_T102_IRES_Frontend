@@ -5,16 +5,16 @@ const VisitorInScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
   const handleEnter = () => {
-    const phoneRegex = /^[0-9]{10}$/; // Validation for a 10-digit phone number
+    const phoneRegex = /^[0-9]{10}$/; 
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-    navigation.navigate('Confirmation', { type: 'visitor' }); // Pass 'visitor' as type
+    navigation.navigate('Confirmation', { type: 'visitor' }); 
   };
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack(); 
   };
 
   return (
@@ -29,7 +29,7 @@ const VisitorInScreen = ({ navigation }) => {
         keyboardType="number-pad"
         value={phoneNumber}
         onChangeText={setPhoneNumber}
-        maxLength={10} // Limit input to 10 characters
+        maxLength={10} 
       />
       <View style={styles.buttonContainer}>
         <Button title="Back" style={styles.button} onPress={handleBack}/>
@@ -39,7 +39,7 @@ const VisitorInScreen = ({ navigation }) => {
           title="Enter" style={[styles.button, phoneNumber ? '' : styles.disabledButton]}
           onPress={handleEnter}
           
-          disabled={!phoneNumber} // Disable button if phone number is empty
+          disabled={!phoneNumber} 
         />
          
       </View>
