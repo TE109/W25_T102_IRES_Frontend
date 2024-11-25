@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput,  StyleSheet, Alert, Button } from 'react-native';
 
+//Delivery Screen
+//Nevigation to confirmation screen
+//Using usestate to store data
 const DeliveryScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
   const handleEnter = () => {
-    const phoneRegex = /^[0-9]{10}$/;
+    const phoneRegex = /^[0-9]{10}$/; // phone number validation, 10 digita
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;

@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 
+//Confriamtion screen
+//Nevigation to checkin screen
 const ConfirmationScreen = ({ navigation, route }) => {
   const { type } = route.params;
 
@@ -8,6 +10,8 @@ const ConfirmationScreen = ({ navigation, route }) => {
     navigation.navigate('CheckIn');
   };
 
+  //This is for prototype only
+  //More logics will be added at final implementation
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Confirmation</Text>

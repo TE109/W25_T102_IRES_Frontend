@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, Button } from 'react-native';
-
+//Visitor Screen 
+//Using useState for data store and display if neccessary
+//neviatiion to coinfirmation screens
 const VisitorInScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
@@ -8,7 +10,7 @@ const VisitorInScreen = ({ navigation }) => {
     const phoneRegex = /^[0-9]{10}$/; 
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
-      return;
+      return; //Phone number validation - 10 digits
     }
     navigation.navigate('Confirmation', { type: 'visitor' }); 
   };

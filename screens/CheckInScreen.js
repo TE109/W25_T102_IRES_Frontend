@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
-
+//We have 4 screens for the prototype
+//Checkin Screen
+//Add nevigation to Visitor Screen or Delivery Screen depends on the user input
 const CheckInScreen = ({ navigation }) => {
   const handleVisitAppointment = () => {
     navigation.navigate('VisitorInScreen');
@@ -10,11 +12,13 @@ const CheckInScreen = ({ navigation }) => {
     navigation.navigate('DeliveryScreen');
   };
 
+  //Add onPress listener ffor buttons to neviagate
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Check-In</Text>
       <Text style={styles.subtitle}>What brings you in today?</Text>
       <View style={styles.buttonContainer}>
+        
         <Button title="Visit/Appointment" onPress={handleVisitAppointment}/>
           
         <Button title="Delivery" onPress={handleDelivery}/>
