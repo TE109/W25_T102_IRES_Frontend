@@ -14,8 +14,10 @@ const DeliveryScreen = ({ navigation }) => {
   };
 
   const handleBack = () => {
-    navigation.goBack(); 
-  };
+
+    navigation.goBack(); // Navigate back to the previous screen
+    };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Delivery-In</Text>
@@ -29,59 +31,55 @@ const DeliveryScreen = ({ navigation }) => {
         maxLength={10}
       />
       <View style={styles.buttonContainer}>
-      <Button title="Back" style={styles.button} onPress={handleBack}/>
-      <Button title="Enter" style={styles.button} onPress={handleEnter}/>
+      <Button title="Back" onPress={handleBack}/>
+              <Button
+                  title="Enter"
+                  onPress={handleEnter}
+
+                  disabled={!phoneNumber} // Disable button if phone number is empty
+              />
       </View>
-      
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FAF9F6',
-    paddingHorizontal: 20,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f5f2e3',
+        paddingHorizontal: 20,
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: 'black',
+        marginBottom: 20,
+    },
+    subtitle: {
+        fontSize: 18,
+        color: 'black',
+        marginBottom: 40,
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '90%',
+    },
   input: {
     width: '80%',
     height: 50,
     borderWidth: 1,
-    borderColor: '#CCC',
+    borderColor: 'gray',
     borderRadius: 8,
     paddingHorizontal: 10,
-    marginBottom: 20,
-    backgroundColor: '#FFF',
-  },
-  button: {
-    backgroundColor: '#D3D3D3',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
+    marginBottom: 30,
+    backgroundColor: 'white',
+  }
+
 });
 
 export default DeliveryScreen;

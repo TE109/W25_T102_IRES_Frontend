@@ -12,7 +12,7 @@ const ConfirmationScreen = ({ navigation, route }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Confirmation</Text>
       <Text style={styles.message}>Correct access code!</Text>
-      <Button title="Main Screen" style={styles.button} onPress={handleMainScreen}/>
+      <Button title="Main Screen" onPress={handleMainScreen}/>
        
       
     </View>
@@ -20,35 +20,33 @@ const ConfirmationScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FAF9F6',
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f5f2e3',
+        paddingHorizontal: 20,
+    },
+    title: {
+        fontSize: 28,
+        textAlign: 'center',
+        color: 'black',
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '90%',
+    },
   message: {
     fontSize: 18,
     textAlign: 'center',
-    color: '#333',
-    marginBottom: 20,
+    color: 'black',
+    marginBottom: 30,
   },
-  button: {
-    backgroundColor: '#D3D3D3',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
+
 });
 
 export default ConfirmationScreen;
