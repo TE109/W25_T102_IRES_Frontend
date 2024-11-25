@@ -14,12 +14,8 @@ const DeliveryScreen = ({ navigation }) => {
   };
 
   const handleBack = () => {
+
     navigation.goBack(); // Navigate back to the previous screen
-    };
-
-
-    const handleHelp = () => {
-        navigation.navigate('HelpScreen');
     };
 
   return (
