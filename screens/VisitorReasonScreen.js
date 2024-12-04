@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
+//Visitor Reason Screen
 const VisitorReasonScreen = ({ navigation }) => {
   const [reason, setReason] = useState('');
 

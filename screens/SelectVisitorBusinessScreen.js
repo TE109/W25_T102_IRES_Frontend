@@ -5,7 +5,7 @@ import { Picker } from '@react-native-picker/picker'; // Use only this Picker
 const SelectVisitorBusinessScreen = ({ navigation }) => {
   const [selectedBusiness, setSelectedBusiness] = useState('');
 
-  // List of businesses or people to visit
+  // List of businesses or people to visit by default
   const businesses = [
     'Amazon',
     'RBC',
@@ -13,6 +13,7 @@ const SelectVisitorBusinessScreen = ({ navigation }) => {
     'Cats co',
   ];
 
+  //handkeNext to validate the selection and navigate to Vistor Appoinment screen
   const handleNext = () => {
     if (!selectedBusiness) {
       Alert.alert('Selection Required', 'Please select who you are visiting.');
@@ -33,7 +34,7 @@ const SelectVisitorBusinessScreen = ({ navigation }) => {
         <View style={styles.pickerContainer}>
           <Picker
             selectedValue={selectedBusiness}
-            onValueChange={(itemValue) => setSelectedBusiness(itemValue)}
+            onValueChange={(itemValue) => setSelectedBusiness(itemValue)} //Show list of business from saved data
             style={styles.picker}
           >
             <Picker.Item label="Select an option" value="" />
@@ -43,8 +44,9 @@ const SelectVisitorBusinessScreen = ({ navigation }) => {
           </Picker>
         </View>
       </View>
+      
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={handleBack}> 
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleNext}>

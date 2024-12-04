@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-
+//Visitor Appoinment Screen
+//Also added handler functions as the previous screens for event Listeners
 const VisitorAppointmentScreen = ({ navigation }) => {
   const [appointmentTime, setAppointmentTime] = useState('');
 
+  //navigate to Waiting for approval - visitor
+  //appoinmentTime param
   const handleNext = () => {
     // Proceed to the next step (or skip if no time entered)
     navigation.navigate('WaitingForApprovalVisitor', { appointmentTime });

@@ -15,7 +15,7 @@ const SelectDeliveryCompanyScreen = ({ navigation }) => {
     'Cats co'
   ];
 
-  //Similar concept using handleNext an dhandleBack for event Listeners
+  //Similar concept using handleNext and handleBack for event Listeners
   //Validation and navigate to Waiting for Approval-Devlivery
 
   const handleNext = () => {
@@ -57,7 +57,7 @@ const SelectDeliveryCompanyScreen = ({ navigation }) => {
         <TouchableOpacity
           style={[
             styles.button,
-            !selectedCompany && styles.disabledButton, // Optional: disable styling if no selection
+            !selectedCompany && styles.disabledButton, //  disable styling if no selection
           ]}
           onPress={handleNext}
           disabled={!selectedCompany} // Disable button if no company is selected
