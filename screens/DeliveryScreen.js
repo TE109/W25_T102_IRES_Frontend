@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput,  StyleSheet, Alert, Button } from 'react-native';
+import { View, Text, TextInput,  StyleSheet, Alert, TouchableOpacity } from 'react-native';
 
 //Delivery Screen
 //Nevigation to confirmation screen
 //Using usestate to store data
 const DeliveryScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
+
+  const handleNoAccessCode = () => {
+    navigation.navigate('RequestDeliveryCode'); // Navigate to RequestDeliveryCodeScreen
+  };
 
   const handleEnter = () => {
     const phoneRegex = /^[0-9]{10}$/; // phone number validation, 10 digita
@@ -34,14 +38,23 @@ const DeliveryScreen = ({ navigation }) => {
         maxLength={10}
       />
       <View style={styles.buttonContainer}>
-      <Button title="Back" onPress={handleBack}/>
-              <Button
-                  title="Enter"
-                  onPress={handleEnter}
-
-                  disabled={!phoneNumber} // Disable button if phone number is empty
-              />
+      <TouchableOpacity style={styles.button} onPress={handleBack}>
+          <Text style={styles.buttonText}>Back</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, !phoneNumber && styles.disabledButton]}
+          onPress={handleEnter}
+          disabled={!phoneNumber} // Disable button if phone number is empty
+        >
+          <Text style={styles.buttonText}>Enter</Text>
+        </TouchableOpacity>
       </View>
+      <TouchableOpacity style={styles.noCodeButton} onPress={handleNoAccessCode}>
+        <Text style={styles.buttonText}>I don't have access code</Text>
+      </TouchableOpacity>
+  
+
+
 
     </View>
   );
@@ -81,6 +94,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 30,
     backgroundColor: 'white',
+  },
+  button: {
+    backgroundColor: '#D3D3D3',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginHorizontal: 10,
+  },
+  disabledButton: {
+    backgroundColor: '#A9A9A9',
+  },
+  noCodeButton: {
+    backgroundColor: '#D3D3D3',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    textAlign: 'center',
   }
 
 });

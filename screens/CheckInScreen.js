@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 //We have 4 screens for the prototype
 //Checkin Screen
 //Add nevigation to Visitor Screen or Delivery Screen depends on the user input
@@ -19,10 +19,12 @@ const CheckInScreen = ({ navigation }) => {
       <Text style={styles.subtitle}>What brings you in today?</Text>
       <View style={styles.buttonContainer}>
         
-        <Button title="Visit/Appointment" onPress={handleVisitAppointment}/>
-          
-        <Button title="Delivery" onPress={handleDelivery}/>
-        
+      <TouchableOpacity style={styles.button} onPress={handleVisitAppointment}>
+          <Text style={styles.buttonText}>Visit/Appointment</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleDelivery}>
+          <Text style={styles.buttonText}>Delivery</Text>
+        </TouchableOpacity>
         
       </View>
     </View>
@@ -54,6 +56,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     width: '90%',
     },
+    button: {
+      backgroundColor: '#D3D3D3',
+      paddingVertical: 15,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+      elevation: 3, // Adds shadow for a button effect
+    },
+    buttonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#000',
+      textAlign: 'center',
+    }
 
 
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 //Confriamtion screen
 //Nevigation to checkin screen
@@ -16,7 +16,9 @@ const ConfirmationScreen = ({ navigation, route }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Confirmation</Text>
       <Text style={styles.message}>Correct access code!</Text>
-      <Button title="Main Screen" onPress={handleMainScreen}/>
+      <TouchableOpacity style={styles.button} onPress={handleMainScreen}>
+        <Text style={styles.buttonText}>Main Screen</Text>
+      </TouchableOpacity>
        
       
     </View>
@@ -50,6 +52,19 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 30,
   },
+  button: {
+    backgroundColor: '#D3D3D3',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    elevation: 3, // Adds shadow for button effect
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    textAlign: 'center',
+  }
 
 });
 
