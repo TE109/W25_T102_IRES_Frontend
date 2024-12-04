@@ -1,23 +1,22 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-//Confriamtion screen
+//Confrimation screen
 //Nevigation to checkin screen
 const ConfirmationScreen = ({ navigation, route }) => {
   const { type } = route.params;
+  //Handle button listener when the access code is correct
 
   const handleMainScreen = () => {
-    navigation.navigate('CheckIn');
+    navigation.navigate('CheckIn'); //Navigate to CheckinScreen 
   };
 
-  //This is for prototype only
-  //More logics will be added at final implementation
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Confirmation</Text>
       <Text style={styles.message}>Correct access code!</Text>
       <TouchableOpacity style={styles.button} onPress={handleMainScreen}>
-        <Text style={styles.buttonText}>Main Screen</Text>
+        <Text style={styles.buttonText}>Main Screen</Text> {/*Naviagte to checkin screen */}
       </TouchableOpacity>
        
       

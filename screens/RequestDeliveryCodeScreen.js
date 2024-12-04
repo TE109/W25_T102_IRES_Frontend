@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-
+//Request Delivery Code Screen
+// Similarly use Usestate to handle data
 const RequestDeliveryCodeScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
+  //handleNext to validate and navigate for event listener
   const handleNext = () => {
-    const phoneRegex = /^[0-9]{10}$/; // Validate phone number
+    const phoneRegex = /^[0-9]{10}$/; // Validate phone number, similar logic to previous screen
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
   
-    // Navigate to the company input screen, passing the phone number
+    // Navigate to the company input screen, passing the phone number para
     navigation.navigate('EnterDeliveryCompany', { phoneNumber });
   };
   
   const handleBackToMain = () => {
-    navigation.navigate('CheckIn'); // Navigate back to the main screen
+    navigation.navigate('CheckIn'); // Navigate back to the Check in Screen
   };
 
   return (
@@ -34,15 +36,15 @@ const RequestDeliveryCodeScreen = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handleBackToMain}>
+      <TouchableOpacity style={styles.button} onPress={handleBackToMain}> {/*Event listener, navigate to navigate screen*/}
           <Text style={styles.buttonText}>Go back to main screen</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.button,
-            !phoneNumber.trim() && styles.disabledButton, // Optional: disable styling if input is empty
+            !phoneNumber.trim() && styles.disabledButton, // disable styling if input is empty
           ]}
-          onPress={handleNext}
+          onPress={handleNext} //Function to validate before navigation
           disabled={!phoneNumber.trim()} // Disable button if input is empty
         >
           <Text style={styles.buttonText}>Next</Text>

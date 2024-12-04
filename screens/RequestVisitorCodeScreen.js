@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
+//Request Visitor Code Screen
+//Similar Logic to Request Delivery Code
+//Use useState to handle inputs for vistor Info
 const RequestVisitorCodeScreen = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
 
+  //handleNext function, validate input to prevent empty input and navigate
   const handleNext = () => {
     if (!fullName.trim()) {
       Alert.alert('Full Name Required', 'Please enter your full name to proceed.');
@@ -14,6 +18,7 @@ const RequestVisitorCodeScreen = ({ navigation }) => {
     navigation.navigate('RequestVisitorPhone', { fullName });
   };
 
+  //handleBack function navigate to previous
   const handleBack = () => {
     navigation.goBack(); // Go back to the previous screen
   };
@@ -31,10 +36,10 @@ const RequestVisitorCodeScreen = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={handleBack}> {/*Applied handleBack listener*/}
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
+        <TouchableOpacity style={styles.button} onPress={handleNext}> {/*Applied handleNext listener*/}
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
       </View>

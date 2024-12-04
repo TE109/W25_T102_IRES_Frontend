@@ -8,7 +8,7 @@ const EnterDeliveryCompanyScreen = ({ navigation, route }) => {
   const handleNext = () => {
     if (!companyName.trim()) {
       Alert.alert('Company Name Required', 'Please enter your delivery company name to proceed.');
-      return;
+      return; //Validate to ensure the input is not empty
     }
   
     // Navigate to SelectDeliveryCompanyScreen
@@ -32,14 +32,14 @@ const EnterDeliveryCompanyScreen = ({ navigation, route }) => {
       </View>
       <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.button} onPress={handleBack}>
-          <Text style={styles.buttonText}>Back</Text>
+          <Text style={styles.buttonText}>Back</Text> {/*Handle Back to navigate goBack*/}
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.button,
             !companyName.trim() && styles.disabledButton, // Optional: disable styling if input is empty
           ]}
-          onPress={handleNext}
+          onPress={handleNext} //handleNext to validate empty input prior navigating
           disabled={!companyName.trim()} // Disable button if input is empty
         >
           <Text style={styles.buttonText}>Next</Text>
