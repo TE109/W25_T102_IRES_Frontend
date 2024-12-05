@@ -2,16 +2,21 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Button } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For dropdown functionality
 
+//Added default data of company located inside our building
+//Use useState to handle inputs
 const SelectDeliveryCompanyScreen = ({ navigation }) => {
   const [selectedCompany, setSelectedCompany] = useState('');
 
-  // List of companies (can be replaced with real data)
+  // List of companies by default at the building
   const companies = [
     'Amazon',
     'RBC',
     'THJ',
     'Cats co'
   ];
+
+  //Similar concept using handleNext and handleBack for event Listeners
+  //Validation and navigate to Waiting for Approval-Devlivery
 
   const handleNext = () => {
     if (!selectedCompany) {
@@ -52,7 +57,7 @@ const SelectDeliveryCompanyScreen = ({ navigation }) => {
         <TouchableOpacity
           style={[
             styles.button,
-            !selectedCompany && styles.disabledButton, // Optional: disable styling if no selection
+            !selectedCompany && styles.disabledButton, //  disable styling if no selection
           ]}
           onPress={handleNext}
           disabled={!selectedCompany} // Disable button if no company is selected

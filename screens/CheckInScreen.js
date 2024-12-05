@@ -1,24 +1,28 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-//We have 4 screens for the prototype
 //Checkin Screen
 //Add nevigation to Visitor Screen or Delivery Screen depends on the user input
 const CheckInScreen = ({ navigation }) => {
+  //Handle button listener when user select the purpose of visit
   const handleVisitAppointment = () => {
-    navigation.navigate('VisitorInScreen');
+    navigation.navigate('VisitorInScreen'); //Navigate to VisitorInScreen 
   };
 
   const handleDelivery = () => {
-    navigation.navigate('DeliveryScreen');
+    navigation.navigate('DeliveryScreen'); //Navigate to DeliveryScreen
   };
 
-  //Add onPress listener ffor buttons to neviagate
+  //Add onPress listener for buttons to neviagate
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Check-In</Text>
       <Text style={styles.subtitle}>What brings you in today?</Text>
       <View style={styles.buttonContainer}>
         
+        {/*Using TouchableOpacity*/}
+        {/*User Select either of the purposes to be navigated to VisitorInScreen or DeliveryScreen*/}
+        {/*Using onPress for event listener*/ }
+
       <TouchableOpacity style={styles.button} onPress={handleVisitAppointment}>
           <Text style={styles.buttonText}>Visit/Appointment</Text>
         </TouchableOpacity>

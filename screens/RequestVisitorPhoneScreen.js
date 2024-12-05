@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-
+//Request Vistor Screen
+//Use useState to handle input
+//passing param from Request Vistor Code handleNext function
 const RequestVisitorPhoneScreen = ({ navigation, route }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
-  const { fullName } = route.params; // Retrieve the full name from the previous screen
+  const { fullName } = route.params; // Retrieve the full name from the previous screen of input from handleNext
 
+  //Handle validation and navigate to Visitor Reason once the validation passed
   const handleNext = () => {
     const phoneRegex = /^[0-9]{10}$/; // Validate phone number (10 digits)
     if (!phoneRegex.test(phoneNumber)) {
@@ -22,6 +25,7 @@ const RequestVisitorPhoneScreen = ({ navigation, route }) => {
     navigation.navigate('VisitorReason');
   };
 
+  //Similarly handleback to navigate previous action
   const handleBack = () => {
     navigation.goBack(); // Go back to the previous screen
   };
@@ -41,10 +45,10 @@ const RequestVisitorPhoneScreen = ({ navigation, route }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={handleBack}> {/*handleBack to navigate the previous action */}
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
+        <TouchableOpacity style={styles.button} onPress={handleNext}> {/*handleNEXT to validate inputs and navigate Visitor Reason Screen */}
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
       </View>

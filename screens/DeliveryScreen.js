@@ -3,12 +3,13 @@ import { View, Text, TextInput,  StyleSheet, Alert, TouchableOpacity } from 'rea
 
 //Delivery Screen
 //Nevigation to confirmation screen
-//Using usestate to store data
+//Use useState to handle Data
 const DeliveryScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
+  //Add the function for event listener to navigate
   const handleNoAccessCode = () => {
-    navigation.navigate('RequestDeliveryCode'); // Navigate to RequestDeliveryCodeScreen
+    navigation.navigate('RequestDeliveryCode'); // Navigate to RequestDeliveryCodeScreen to request Access code
   };
 
   const handleEnter = () => {
@@ -17,7 +18,7 @@ const DeliveryScreen = ({ navigation }) => {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-    navigation.navigate('Confirmation', { type: 'delivery' });
+    navigation.navigate('Confirmation', { type: 'delivery' }); //Navigate to confirmation screen // para: 'delivery'
   };
 
   const handleBack = () => {
@@ -39,18 +40,18 @@ const DeliveryScreen = ({ navigation }) => {
       />
       <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.button} onPress={handleBack}>
-          <Text style={styles.buttonText}>Back</Text>
+          <Text style={styles.buttonText}>Back</Text> {/*Return listener with navigation to go Back */}
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, !phoneNumber && styles.disabledButton]}
-          onPress={handleEnter}
-          disabled={!phoneNumber} // Disable button if phone number is empty
+          onPress={handleEnter} //Handled by handleEnter function with validation, once validation passed, navigate to confirmation screen with para: 'Delivery' 
+          disabled={!phoneNumber} // Disable button Enter if phone number is empty
         >
           <Text style={styles.buttonText}>Enter</Text>
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.noCodeButton} onPress={handleNoAccessCode}>
-        <Text style={styles.buttonText}>I don't have access code</Text>
+        <Text style={styles.buttonText}>I don't have access code</Text> {/*Handle navigation to RequestDeliveryCodeScreen to request Access code from the handleNoAccessCode function */}
       </TouchableOpacity>
   
 

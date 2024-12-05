@@ -7,6 +7,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+//Import screens 
 import CheckInScreen from './screens/CheckInScreen';
 import VisitorInScreen from './screens/VisitorInScreen';
 import DeliveryScreen from './screens/DeliveryScreen';
@@ -23,7 +24,7 @@ import VisitorAppointmentScreen from './screens/VisitorAppointmentScreen';
 import WaitingForApprovalVisitorScreen from './screens/WaitingForApprovalVisitorScreen';
 
 const Stack = createStackNavigator();
-
+//14 screens for final implementations
 export default function App() {
   return (
     <NavigationContainer>

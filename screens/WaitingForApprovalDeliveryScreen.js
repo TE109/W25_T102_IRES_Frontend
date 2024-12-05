@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 const WaitingForApprovalDeliveryScreen = ({ navigation }) => {
   const handleMainScreen = () => {
-    navigation.navigate('CheckIn'); // Navigate back to the main screen
+    navigation.navigate('CheckIn'); // Navigate  to the checkin screen
   };
 
   return (
