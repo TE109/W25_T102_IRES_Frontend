@@ -31,10 +31,11 @@ const SelectVisitorBusinessScreen = ({ navigation }) => {
       <Text style={styles.title}>Request entrance code as a visitor</Text>
       <View style={styles.dropdownContainer}>
         <Text style={styles.subtitle}>Please select who you are visiting.</Text>
+        {/*Show list of business from saved data*/}
         <View style={styles.pickerContainer}>
           <Picker
             selectedValue={selectedBusiness}
-            onValueChange={(itemValue) => setSelectedBusiness(itemValue)} //Show list of business from saved data
+            onValueChange={(itemValue) => setSelectedBusiness(itemValue)} 
             style={styles.picker}
           >
             <Picker.Item label="Select an option" value="" />

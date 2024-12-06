@@ -32,20 +32,22 @@ const RequestDeliveryCodeScreen = ({ navigation }) => {
           keyboardType="number-pad"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
-          maxLength={10} // Limit to 10 digits
+          maxLength={10} 
         />
       </View>
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handleBackToMain}> {/*Event listener, navigate to navigate screen*/}
+      <TouchableOpacity style={styles.button} onPress={handleBackToMain}> 
+        
           <Text style={styles.buttonText}>Main Screen</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.button,
-            !phoneNumber.trim() && styles.disabledButton, // disable styling if input is empty
+            !phoneNumber.trim() && styles.disabledButton, 
           ]}
-          onPress={handleNext} //Function to validate before navigation
-          disabled={!phoneNumber.trim()} // Disable button if input is empty
+          
+          onPress={handleNext} 
+          disabled={!phoneNumber.trim()} 
         >
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>

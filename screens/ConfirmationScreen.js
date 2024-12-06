@@ -16,7 +16,7 @@ const ConfirmationScreen = ({ navigation, route }) => {
       <Text style={styles.title}>Confirmation</Text>
       <Text style={styles.message}>Correct access code!</Text>
       <TouchableOpacity style={styles.button} onPress={handleMainScreen}>
-        <Text style={styles.buttonText}>Main Screen</Text> {/*Naviagte to checkin screen */}
+        <Text style={styles.buttonText}>Main Screen</Text> 
       </TouchableOpacity>
        
       

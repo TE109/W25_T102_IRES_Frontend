@@ -20,7 +20,7 @@ const RequestVisitorCodeScreen = ({ navigation }) => {
 
   //handleBack function navigate to previous
   const handleBack = () => {
-    navigation.goBack(); // Go back to the previous screen
+    navigation.goBack(); 
   };
 
   return (
@@ -36,10 +36,10 @@ const RequestVisitorCodeScreen = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}> {/*Applied handleBack listener*/}
+        <TouchableOpacity style={styles.button} onPress={handleBack}> 
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext}> {/*Applied handleNext listener*/}
+        <TouchableOpacity style={styles.button} onPress={handleNext}> 
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
       </View>

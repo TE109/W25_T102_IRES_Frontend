@@ -54,13 +54,15 @@ const SelectDeliveryCompanyScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={handleBack}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
+        {/*Disable button if no company is selected*/}
+        {/*isable styling if no selection*/}
         <TouchableOpacity
           style={[
             styles.button,
-            !selectedCompany && styles.disabledButton, //  disable styling if no selection
+            !selectedCompany && styles.disabledButton, 
           ]}
           onPress={handleNext}
-          disabled={!selectedCompany} // Disable button if no company is selected
+          disabled={!selectedCompany} 
         >
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>

@@ -40,10 +40,11 @@ const VisitorInScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={handleBack}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
+        {/*Apply disabled styling if no input*/}
         <TouchableOpacity
           style={[
             styles.button,
-            !phoneNumber && styles.disabledButton, // Apply disabled styling if no input
+            !phoneNumber && styles.disabledButton, 
           ]}
           onPress={handleEnter}
           disabled={!phoneNumber}

@@ -29,7 +29,9 @@ const DeliveryScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Delivery-In</Text>
-      <Text style={styles.subtitle}>Please enter the access code sent to your phone number.</Text>
+      <Text style={styles.subtitle}>
+        Please enter the access code sent to your phone number
+      </Text>
       <TextInput
         style={styles.input}
         placeholder="Enter phone number"
@@ -39,24 +41,24 @@ const DeliveryScreen = ({ navigation }) => {
         maxLength={10}
       />
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handleBack}>
-          <Text style={styles.buttonText}>Back</Text> {/*Return listener with navigation to go Back */}
+        <TouchableOpacity style={styles.button} onPress={handleBack}>
+          <Text style={styles.buttonText}>Back</Text> 
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.button, !phoneNumber && styles.disabledButton]}
-          onPress={handleEnter} //Handled by handleEnter function with validation, once validation passed, navigate to confirmation screen with para: 'Delivery' 
-          disabled={!phoneNumber} // Disable button Enter if phone number is empty
+          style={[
+            styles.button, 
+            !phoneNumber && styles.disabledButton,
+          ]}
+          onPress={handleEnter} 
+          disabled={!phoneNumber} 
         >
           <Text style={styles.buttonText}>Enter</Text>
         </TouchableOpacity>
       </View>
+      {/*Handle navigation to RequestDeliveryCodeScreen to request Access code from the handleNoAccessCode function */}
       <TouchableOpacity style={styles.noCodeButton} onPress={handleNoAccessCode}>
-        <Text style={styles.buttonText}>I don't have access code</Text> {/*Handle navigation to RequestDeliveryCodeScreen to request Access code from the handleNoAccessCode function */}
+        <Text style={styles.buttonText}>I don't have access code</Text> 
       </TouchableOpacity>
-  
-
-
-
     </View>
   );
 };

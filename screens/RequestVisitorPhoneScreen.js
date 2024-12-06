@@ -45,10 +45,10 @@ const RequestVisitorPhoneScreen = ({ navigation, route }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}> {/*handleBack to navigate the previous action */}
+        <TouchableOpacity style={styles.button} onPress={handleBack}> 
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext}> {/*handleNEXT to validate inputs and navigate Visitor Reason Screen */}
+        <TouchableOpacity style={styles.button} onPress={handleNext}> 
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
       </View>

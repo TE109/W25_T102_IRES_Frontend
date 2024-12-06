@@ -32,15 +32,15 @@ const EnterDeliveryCompanyScreen = ({ navigation, route }) => {
       </View>
       <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.button} onPress={handleBack}>
-          <Text style={styles.buttonText}>Back</Text> {/*Handle Back to navigate goBack*/}
+          <Text style={styles.buttonText}>Back</Text> 
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.button,
-            !companyName.trim() && styles.disabledButton, // Optional: disable styling if input is empty
+            !companyName.trim() && styles.disabledButton, 
           ]}
-          onPress={handleNext} //handleNext to validate empty input prior navigating
-          disabled={!companyName.trim()} // Disable button if input is empty
+          onPress={handleNext} 
+          disabled={!companyName.trim()} 
         >
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
