@@ -37,7 +37,7 @@ const RequestDeliveryCodeScreen = ({ navigation }) => {
       </View>
       <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.button} onPress={handleBackToMain}> {/*Event listener, navigate to navigate screen*/}
-          <Text style={styles.buttonText}>Go back to main screen</Text>
+          <Text style={styles.buttonText}>Main Screen</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FAF9F6',
+    backgroundColor: '#f5f2e3',
     paddingHorizontal: 20,
   },
   title: {
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     width: '80%',
   },
   button: {
