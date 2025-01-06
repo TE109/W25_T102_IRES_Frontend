@@ -1,35 +1,40 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-//Checkin Screen
-//Add nevigation to Visitor Screen or Delivery Screen depends on the user input
+
 const CheckInScreen = ({ navigation }) => {
-  //Handle button listener when user select the purpose of visit
+  // Navigate to SignInScreen
+  const handleHome = () => {
+    navigation.navigate('SignInOrSignUp');
+  };
+
+  // Navigate to VisitorInScreen
   const handleVisitAppointment = () => {
-    navigation.navigate('VisitorInScreen'); //Navigate to VisitorInScreen 
+    navigation.navigate('VisitorInScreen');
   };
 
+  // Navigate to DeliveryScreen
   const handleDelivery = () => {
-    navigation.navigate('DeliveryScreen'); //Navigate to DeliveryScreen
+    navigation.navigate('DeliveryScreen');
   };
 
-  //Add onPress listener for buttons to neviagate
   return (
     <View style={styles.container}>
+      {/* Home Button */}
+      <TouchableOpacity style={[styles.button, styles.homeButton]} onPress={handleHome}>
+        <Text style={styles.buttonText}>🏠 Home</Text>
+      </TouchableOpacity>
+
       <Text style={styles.title}>Check-In</Text>
       <Text style={styles.subtitle}>What brings you in today?</Text>
       <View style={styles.buttonContainer}>
-        
-        {/*Using TouchableOpacity*/}
-        {/*User Select either of the purposes to be navigated to VisitorInScreen or DeliveryScreen*/}
-        {/*Using onPress for event listener*/ }
-
-      <TouchableOpacity style={styles.button} onPress={handleVisitAppointment}>
+        {/* Visit/Appointment Button */}
+        <TouchableOpacity style={styles.button} onPress={handleVisitAppointment}>
           <Text style={styles.buttonText}>Visit/Appointment</Text>
         </TouchableOpacity>
+        {/* Delivery Button */}
         <TouchableOpacity style={styles.button} onPress={handleDelivery}>
           <Text style={styles.buttonText}>Delivery</Text>
         </TouchableOpacity>
-        
       </View>
     </View>
   );
@@ -43,6 +48,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f2e3',
     paddingHorizontal: 20,
   },
+  homeButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    width: 100, // Adjusted width for the button
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   title: {
     fontSize: 28,
     textAlign: 'center',
@@ -55,26 +68,25 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 40,
   },
-    buttonContainer: {
+  buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '90%',
-    },
-    button: {
-      backgroundColor: '#D3D3D3',
-      paddingVertical: 15,
-      paddingHorizontal: 20,
-      borderRadius: 8,
-      elevation: 3, // Adds shadow for a button effect
-    },
-    buttonText: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: '#000',
-      textAlign: 'center',
-    }
-
-
+  },
+  button: {
+    backgroundColor: '#D3D3D3',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    elevation: 3, // Adds shadow for a button effect
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    textAlign: 'center',
+  },
 });
 
 export default CheckInScreen;
