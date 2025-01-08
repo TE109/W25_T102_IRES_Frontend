@@ -30,7 +30,7 @@ const VisitorInScreen = ({ navigation }) => {
       </Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter phone number"
+        placeholder="Enter Code"
         keyboardType="number-pad"
         value={phoneNumber}
         onChangeText={setPhoneNumber}

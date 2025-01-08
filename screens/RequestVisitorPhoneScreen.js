@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import SendSMS from 'react-native-sms';
 
 const RequestVisitorPhoneScreen = ({ navigation, route }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
-  const { fullName } = route.params; // Retrieve the full name from the previous screen
+  const { fullName = 'Visitor' } = route.params || {}; // Retrieve the full name from the previous screen with a fallback
 
   const handleNext = () => {
     const phoneRegex = /^[0-9]{10}$/; // Validate phone number (10 digits)
@@ -12,14 +13,24 @@ const RequestVisitorPhoneScreen = ({ navigation, route }) => {
       return;
     }
 
-    // Simulate sending access code request
-    Alert.alert(
-      'Access Code Requested',
-      `An access code has been sent to the phone number: ${phoneNumber} for ${fullName}.`
+    // Sending SMS using react-native-sms
+    SendSMS.autoSend(
+      {
+        body: 'Test message', 
+        recipients: [phoneNumber],
+        successTypes: ['sent', 'queued'],
+        allowAndroidSendWithoutReadPermission: true, 
+      },
+      (completed, cancelled, error) => {
+        if (completed) {
+          Alert.alert('Success', 'SMS sent successfully!');
+        } else if (cancelled) {
+          Alert.alert('Cancelled', 'SMS sending was cancelled.');
+        } else if (error) {
+          Alert.alert('Error', 'Failed to send SMS.');
+        }
+      }
     );
-
-    // Navigate back to the main screen
-    navigation.navigate('VisitorReason');
   };
 
   const handleBack = () => {
