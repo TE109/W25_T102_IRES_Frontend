@@ -1,12 +1,7 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+const CFG = require("./config/config");
+const app = require("./config/app");
+
 require('dotenv').config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Middleware
-app.use(bodyParser.json());
 
 // Basic route for testing
 app.get('/', (req, res) => {
@@ -14,6 +9,6 @@ app.get('/', (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(CFG.PORT, () => {
+    console.log(`Server is running on http://localhost:${CFG.PORT}`);
 });
