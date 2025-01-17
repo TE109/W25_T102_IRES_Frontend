@@ -39,7 +39,8 @@ npm (comes with Node.js)
 
 Install dependencies:
 npm install
+npm install expo
 
 Running the Application
-npm start
+npx expo start
 Press a for Android if you are using an Android emulator
