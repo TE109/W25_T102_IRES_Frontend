@@ -29,3 +29,17 @@ Waiting for Approval Visitor
 
 ### Akeen Zhong  101462287 
 
+
+## Getting Started
+Prerequisites
+Ensure you have the following installed:
+
+Node.js (v14 or higher)
+npm (comes with Node.js)
+
+Install dependencies:
+npm install
+
+Running the Application
+npm start
+Press a for Android if you are using an Android emulator
