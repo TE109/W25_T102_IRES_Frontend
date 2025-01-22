@@ -3,6 +3,9 @@
     "name": "iresPrototype",
     "slug": "iresPrototype",
     "version": "1.0.0",
+    "android": {
+      "permissions":["INTERNET"]
+    },
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,

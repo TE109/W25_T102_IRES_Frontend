@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {getToken} from './TokenStorage';
 import {
   View,
   Text,
@@ -16,9 +17,9 @@ const AddMoreBusiness = ({ navigation }) => {
   const [roomNumber, setRoomNumber] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const handleAddBusiness = () => {
+  const handleAddBusiness = async () => {
     const phoneRegex = /^[0-9]{10}$/;
-
+    const token = await getToken();
     // Validation for required fields and phone number
     if (!businessName || !phoneNumber) {
       Alert.alert('Missing Information', 'Business name and phone number are required.');
@@ -30,6 +31,38 @@ const AddMoreBusiness = ({ navigation }) => {
       return;
     }
 
+    const companyData ={
+      
+      companyName: businessName,
+      companyFloor: floorNumber,
+      companyRoom: roomNumber,
+      companyPhone: phoneNumber
+  
+  };
+
+     try{
+        const response = await fetch('http://10.0.2.2:3000/api/v1/company',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body:JSON.stringify(companyData),
+  
+        });
+        
+        const result = await response.json();
+  
+        if(response.ok){
+          Alert.alert('Company added successfully!');
+  
+        }else{
+          Alert.alert(`Error: ${result.message || 'something went wrong'}`);
+        }
+      }catch (error){
+        Alert.alert(`Error: ${error.message}`);
+      }
+  
     const newBusiness = {
       id: Date.now().toString(),
       name: businessName,
