@@ -25,7 +25,7 @@ const CheckInScreen = ({ navigation }) => {
       {/* Main Content */}
       <Text style={styles.title}>Check-In</Text>
       <Text style={styles.instructions}>
-        Upon clicking "Continue," you can return to the main menu only by selecting the home button in the top left corner.
+        Upon clicking "Continue," you can return to the admin menu only by selecting the home button in the top left corner.
         {'\n\n'}For security purposes, this action will require re-authentication, ensuring that a visitor cannot alter any data without proper access.
       </Text>
 

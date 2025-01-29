@@ -10,7 +10,7 @@ const SupportScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* Home Button */}
       <TouchableOpacity style={styles.homeButton} onPress={handleHome}>
-        <Text style={styles.homeButtonText}>🏠 Home</Text>
+        <Text style={styles.homeButtonText}>🏠 Admin</Text>
       </TouchableOpacity>
 
       <Text style={styles.title}>Support</Text>
