@@ -1,28 +1,41 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
 
 const CreateAccountScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleNext = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple email validation regex
+  const handleSignup = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple email validation
     if (!emailRegex.test(email)) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
-    // Navigate to the next screen, passing the email
-    navigation.navigate('CreatePassword');
-  };
+    if (password.length < 6) {
+      Alert.alert('Weak Password', 'Password must be at least 6 characters long.');
+      return;
+    }
 
-  const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/admin/signup', {
+        email,
+        password,
+        phoneNumber: '1234567890' // Placeholder, needs actual input
+      });
+
+      Alert.alert('Success', 'Account created successfully!');
+      navigation.navigate('Login');
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create an Account</Text>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Enter Email</Text>
+        <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter Email"
@@ -31,14 +44,19 @@ const CreateAccountScreen = ({ navigation }) => {
           keyboardType="email-address"
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
-          <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
       </View>
+      <TouchableOpacity style={styles.button} onPress={handleSignup}>
+        <Text style={styles.buttonText}>Sign Up</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -59,12 +77,12 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '80%',
-    marginBottom: 40,
+    marginBottom: 20,
   },
   label: {
     fontSize: 16,
     color: '#333',
-    marginBottom: 10,
+    marginBottom: 5,
   },
   input: {
     width: '100%',
@@ -75,22 +93,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: '#FFF',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
-  },
   button: {
-    backgroundColor: '#D3D3D3',
+    backgroundColor: '#007BFF',
     paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
     borderRadius: 8,
-    marginHorizontal: 10,
+    marginTop: 20,
   },
   buttonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000',
+    color: '#FFF',
   },
 });
 

@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Modal } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
-const CreatePasswordScreen = ({ navigation }) => {
+const CreatePasswordScreen = ({ navigation, route }) => {
+  const { email } = route.params; // Get email passed from previous screen
   const [password, setPassword] = useState('');
   const [hintVisible, setHintVisible] = useState(false);
 
   const handleNext = () => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/; // Password must be 8–12 characters with letters and numbers
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/; // 8–12 chars, letters & numbers
     if (!passwordRegex.test(password)) {
       Alert.alert('Invalid Password', 'Your password must be 8–12 characters and include letters and numbers.');
       return;
     }
-    // Navigate to the next screen, passing the password
-    navigation.navigate('EnterPhoneNumber');
+
+    // Proceed to the next screen, passing email & password
+    navigation.navigate('EnterPhoneNumber', { email, password });
   };
 
   const handleBack = () => {
@@ -20,7 +22,7 @@ const CreatePasswordScreen = ({ navigation }) => {
   };
 
   const toggleHint = () => {
-    setHintVisible(!hintVisible); // Toggle the visibility of the hint
+    setHintVisible(!hintVisible); // Toggle password hint
   };
 
   return (
@@ -36,17 +38,17 @@ const CreatePasswordScreen = ({ navigation }) => {
           onChangeText={setPassword}
         />
         <TouchableOpacity onPress={toggleHint} style={styles.hintButton}>
-          <Text style={styles.hintIcon}>❗</Text>
+          <Text style={styles.hintIcon}>ℹ️</Text>
         </TouchableOpacity>
       </View>
       {hintVisible && (
         <View style={styles.hintContainer}>
           <Text style={styles.hintText}>Password requirements:</Text>
-          <Text style={styles.hintDetail}>- Minimum of 8–12 characters</Text>
-          <Text style={styles.hintDetail}>- No spaces allowed</Text>
-          <Text style={styles.hintDetail}>- Must include letters and numbers</Text>
+          <Text style={styles.hintDetail}>8–12 characters</Text>
+          <Text style={styles.hintDetail}>Must include letters & numbers</Text>
+          <Text style={styles.hintDetail}>No spaces allowed</Text>
           <TouchableOpacity onPress={toggleHint}>
-            <Text style={styles.closeHint}>Okay</Text>
+            <Text style={styles.closeHint}>Got it</Text>
           </TouchableOpacity>
         </View>
       )}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getToken } from './TokenStorage';
 import {
   View,
   Text,
@@ -9,15 +10,16 @@ import {
   Alert,
 } from 'react-native';
 
-const CreateAccountScreen = ({ navigation }) => {
+const AddBusiness = ({ navigation }) => {
   const [businesses, setBusinesses] = useState([]);
   const [businessName, setBusinessName] = useState('');
   const [floorNumber, setFloorNumber] = useState('');
   const [roomNumber, setRoomNumber] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const handleAddBusiness = () => {
+  const handleAddBusiness = async () => {
     const phoneRegex = /^[0-9]{10}$/;
+    const token = await getToken();
 
     // Validation for required fields and phone number
     if (!businessName || !phoneNumber) {
@@ -28,6 +30,34 @@ const CreateAccountScreen = ({ navigation }) => {
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
+    }
+
+    const companyData = {
+      companyName: businessName,
+      companyFloor: floorNumber,
+      companyRoom: roomNumber,
+      companyPhone: phoneNumber,
+    };
+
+    try {
+      const response = await fetch('http://10.0.2.2:3000/api/v1/company', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(companyData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Company added successfully!');
+      } else {
+        Alert.alert(`Error: ${result.message || 'Something went wrong'}`);
+      }
+    } catch (error) {
+      Alert.alert(`Error: ${error.message}`);
     }
 
     const newBusiness = {
@@ -57,7 +87,7 @@ const CreateAccountScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Create an Account</Text>
       <Text style={styles.instructions}>
-        Please enter each business or company located within this facility, along with the corresponding room or floor number. 
+        Please enter each business or company located within this facility, along with the corresponding room or floor number.
         Don’t forget to click the 'Add' button to save each entry. Type 0 for floor or room number if it doesn't apply.
       </Text>
 
@@ -203,4 +233,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateAccountScreen;
+export default AddBusiness;

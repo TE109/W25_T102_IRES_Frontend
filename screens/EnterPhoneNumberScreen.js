@@ -1,44 +1,42 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
 
-const EnterPhoneNumberScreen = ({ navigation }) => {
+const EnterPhoneNumberScreen = ({ navigation, route }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
+  const { email, password } = route.params || {};
 
-  const handleNext = () => {
-    const phoneRegex = /^[0-9]{10}$/; // Validate phone number (10 digits)
+  const handleNext = async () => {
+    const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-    
-    navigation.navigate('EnterVerificationCode');
 
-  };
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/admin/verify-phone', {
+        phoneNumber,
+      });
 
-  const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
-  };
-
-  const showHint = () => {
-    Alert.alert(
-      'Phone Number Hint',
-      'Please enter your 10-digit phone number with no spaces.',
-      [{ text: 'Okay' }]
-    );
+      Alert.alert('Success', 'Phone number verified. Enter the code next.');
+      navigation.navigate('EnterVerificationCode', { email, password, phoneNumber });
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
+      <Text style={styles.title}>Enter Phone Number</Text>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Enter phone number</Text>
+        <Text style={styles.label}>Phone Number</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter phone number"
           keyboardType="number-pad"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
-          maxLength={10} // Limit input to 10 digits
+          maxLength={10}
         />
         <TouchableOpacity onPress={showHint} style={styles.hintButton}>
           <Text style={styles.hintIcon}>❗</Text>
@@ -48,9 +46,9 @@ const EnterPhoneNumberScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={handleBack}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleNext}>
+        <Text style={styles.buttonText}>Next</Text>
+      </TouchableOpacity>
       </View>
     </View>
   );
