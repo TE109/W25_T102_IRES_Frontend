@@ -21,7 +21,7 @@ const CheckInScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* Home Button */}
       <TouchableOpacity style={[styles.button, styles.homeButton]} onPress={handleHome}>
-        <Text style={styles.buttonText}>🏠 Home</Text>
+        <Text style={styles.buttonText}>🏠 Admin</Text>
       </TouchableOpacity>
 
       <Text style={styles.title}>Check-In</Text>

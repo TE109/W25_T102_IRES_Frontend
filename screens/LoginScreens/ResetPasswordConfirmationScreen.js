@@ -16,12 +16,14 @@ const ResetPasswordConfirmationScreen = ({ navigation }) => {
       </Text>
       
       <TouchableOpacity style={styles.button} onPress={handleGoToMainMenu}>
+        
         <Text style={styles.buttonText}>Go back to main menu</Text>
+        
       </TouchableOpacity>
     </View>
   );
 };
-
+//may be preferable to return to the admin menu
 const styles = StyleSheet.create({
   container: {
     flex: 1,
