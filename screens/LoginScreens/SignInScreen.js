@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import {storeToken} from './TokenStorage';
+import {storeToken} from './TokenStorage.js';
 
 const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
