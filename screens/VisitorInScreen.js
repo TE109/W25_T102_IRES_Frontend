@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import axios from 'axios';
 
-// Visitor Screen 
 const VisitorInScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
@@ -9,13 +9,23 @@ const VisitorInScreen = ({ navigation }) => {
     navigation.navigate('RequestVisitorCode');
   };
 
-  const handleEnter = () => {
+  const handleEnter = async () => {
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-    navigation.navigate('Confirmation', { type: 'visitor' });
+    
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/visitor/verify', { phoneNumber });
+      if (response.data.success) {
+        navigation.navigate('Confirmation', { type: 'visitor' });
+      } else {
+        Alert.alert('Error', response.data.message || 'Invalid visitor access code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Failed to verify visitor access code.');
+    }
   };
 
   const handleBack = () => {
@@ -25,9 +35,7 @@ const VisitorInScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Visitor-In</Text>
-      <Text style={styles.subtitle}>
-        Please enter the access code sent to your phone number.
-      </Text>
+      <Text style={styles.subtitle}>Please enter the access code sent to your phone number.</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter phone number"
@@ -40,12 +48,8 @@ const VisitorInScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={handleBack}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        {/*Apply disabled styling if no input*/}
         <TouchableOpacity
-          style={[
-            styles.button,
-            !phoneNumber && styles.disabledButton, 
-          ]}
+          style={[styles.button, !phoneNumber && styles.disabledButton]}
           onPress={handleEnter}
           disabled={!phoneNumber}
         >
@@ -103,7 +107,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   disabledButton: {
-    backgroundColor: '#A9A9A9', // Dimmed color for disabled button
+    backgroundColor: '#A9A9A9',
   },
   buttonText: {
     fontSize: 16,
@@ -122,9 +126,9 @@ const styles = StyleSheet.create({
   noCodeButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000', // Match other buttons' text color
+    color: '#000',
     textAlign: 'center',
-  }
+  },
 });
 
 export default VisitorInScreen;
