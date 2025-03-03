@@ -1,26 +1,27 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
 
-//Request Visitor Code Screen
-//Similar Logic to Request Delivery Code
-//Use useState to handle inputs for vistor Info
 const RequestVisitorCodeScreen = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
 
-  //handleNext function, validate input to prevent empty input and navigate
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!fullName.trim()) {
       Alert.alert('Full Name Required', 'Please enter your full name to proceed.');
       return;
     }
-
-    // Navigate to the phone input screen, passing the full name as a parameter
-    navigation.navigate('RequestVisitorPhone', { fullName });
-  };
-
-  //handleBack function navigate to previous
-  const handleBack = () => {
-    navigation.goBack(); 
+    
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/visitor/request-code', { fullName });
+      if (response.status === 200) {
+        Alert.alert('Success', 'Your visitor access code request has been submitted.');
+        navigation.navigate('RequestVisitorPhone', { fullName });
+      } else {
+        Alert.alert('Error', 'Failed to request a visitor code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
+    }
   };
 
   return (
@@ -36,7 +37,7 @@ const RequestVisitorCodeScreen = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}> 
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}> 
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleNext}> 
