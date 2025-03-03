@@ -1,21 +1,36 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
 
-//Visitor Reason Screen
-const VisitorReasonScreen = ({ navigation }) => {
+const VisitorReasonScreen = ({ navigation, route }) => {
   const [reason, setReason] = useState('');
+  const { fullName, phoneNumber } = route.params;
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!reason.trim()) {
       Alert.alert('Invalid Input', 'Please enter the reason for your visit.');
       return;
     }
-    // Navigate to the confirmation or next step
-    navigation.navigate('SelectVisitorBusiness', { reason });
+    
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/visitor/reason', {
+        fullName,
+        phoneNumber,
+        reason,
+      });
+      if (response.status === 200) {
+        Alert.alert('Success', 'Your reason for visit has been recorded.');
+        navigation.navigate('SelectVisitorBusiness', { reason });
+      } else {
+        Alert.alert('Error', 'Failed to submit visit reason.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
+    }
   };
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   return (
@@ -57,8 +72,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputContainer: {
-    width: '100%',
-    alignItems: 'center',
+    width: '80%',
     marginBottom: 40,
   },
   subtitle: {
@@ -68,7 +82,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
-    width: '80%',
+    width: '100%',
     height: 50,
     borderWidth: 1,
     borderColor: '#CCC',
