@@ -1,57 +1,55 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-//Request Delivery Code Screen
-// Similarly use Usestate to handle data
+import axios from 'axios';
+
 const RequestDeliveryCodeScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  //handleNext to validate and navigate for event listener
-  const handleNext = () => {
-    const phoneRegex = /^[0-9]{10}$/; // Validate phone number, similar logic to previous screen
+  const handleNext = async () => {
+    const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-  
-    // Navigate to the company input screen, passing the phone number para
-    navigation.navigate('EnterDeliveryCompany', { phoneNumber });
-  };
-  
-  const handleBackToMain = () => {
-    navigation.navigate('CheckIn'); // Navigate back to the Check in Screen
+    
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/delivery/request-code', { phoneNumber });
+      if (response.status === 200) {
+        Alert.alert('Success', 'Your delivery access code request has been submitted.');
+        navigation.navigate('EnterDeliveryCompany', { phoneNumber });
+      } else {
+        Alert.alert('Error', 'Failed to request a delivery code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Request a new delivery entrance code</Text>
       <View style={styles.inputContainer}>
-        <Text style={styles.subtitle}>Please enter phone number.</Text>
+        <Text style={styles.subtitle}>Please enter your phone number.</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter phone number"
           keyboardType="number-pad"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
-          maxLength={10} 
+          maxLength={10}
         />
       </View>
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handleBackToMain}> 
-        
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckIn')}>
           <Text style={styles.buttonText}>Main Screen</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[
-            styles.button,
-            !phoneNumber.trim() && styles.disabledButton, 
-          ]}
-          
-          onPress={handleNext} 
-          disabled={!phoneNumber.trim()} 
+          style={[styles.button, !phoneNumber.trim() && styles.disabledButton]}
+          onPress={handleNext}
+          disabled={!phoneNumber.trim()}
         >
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
-         
       </View>
     </View>
   );
@@ -110,7 +108,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   disabledButton: {
-    backgroundColor: '#A9A9A9'
+    backgroundColor: '#A9A9A9',
   }
 });
 
