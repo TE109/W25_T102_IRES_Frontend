@@ -1,22 +1,44 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import axios from 'axios';
 
-const WaitingForApprovalVisitorScreen = ({ navigation }) => {
-  const handleGoToMain = () => {
-    navigation.navigate('CheckIn'); // Navigate to the main screen
-  };
+const WaitingForApprovalVisitorScreen = ({ navigation, route }) => {
+  const { phoneNumber } = route.params;
+  const [isApproved, setIsApproved] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkApprovalStatus = async () => {
+      try {
+        const response = await axios.get(`http://10.0.2.2:3000/api/v1/visitor/status?phoneNumber=${phoneNumber}`);
+        if (response.data.approved) {
+          setIsApproved(true);
+          Alert.alert('Approved', 'Your visitor request has been approved!');
+          navigation.navigate('Confirmation', { type: 'visitor' });
+        }
+      } catch (error) {
+        Alert.alert('Error', 'Failed to check approval status.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const interval = setInterval(checkApprovalStatus, 5000);
+    return () => clearInterval(interval);
+  }, [navigation, phoneNumber]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Request entrance code as a visitor</Text>
-      <Text style={styles.message}>
-        Please wait for a text message with instructions.{"\n"}
-        Waiting for approval.....
-      </Text>
-      <Text style={styles.instruction}>
-        Please tap the button to go back to the main screen.
-      </Text>
-      <TouchableOpacity style={styles.button} onPress={handleGoToMain}>
+      <View style={styles.messageContainer}>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#000" />
+        ) : (
+          <Text style={styles.message}>Waiting for approval.....</Text>
+        )}
+      </View>
+      <Text style={styles.instruction}>Please wait for a text message with instructions.</Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckIn')}>
         <Text style={styles.buttonText}>Main Screen</Text>
       </TouchableOpacity>
     </View>
@@ -34,19 +56,22 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 40,
     textAlign: 'center',
+  },
+  messageContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
   },
   message: {
     fontSize: 18,
-    color: '#333',
     textAlign: 'center',
-    marginBottom: 40,
+    color: '#333',
   },
   instruction: {
     fontSize: 16,
-    color: '#666',
     textAlign: 'center',
+    color: '#333',
     marginBottom: 20,
   },
   button: {
