@@ -1,45 +1,56 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
 
-const EnterVerificationCodeScreen = ({ navigation }) => {
+const EnterVerificationCodeScreen = ({ navigation, route }) => {
   const [verificationCode, setVerificationCode] = useState('');
+  const { email, phoneNumber } = route.params;
 
-  const handleNext = () => {
-    const codeRegex = /^[0-9]{6}$/; // Assuming the verification code is 6 digits
+  const handleNext = async () => {
+    const codeRegex = /^[0-9]{6}$/;
     if (!codeRegex.test(verificationCode)) {
       Alert.alert('Invalid Code', 'Please enter a valid 6-digit verification code.');
       return;
     }
-    
-    navigation.navigate('AddBusinessDetails')
+
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/admin/verify-code', {
+        email,
+        phoneNumber,
+        verificationCode,
+      });
+
+      if (response.status === 200) {
+        Alert.alert('Success', 'Verification successful!');
+        navigation.navigate('AddBusinessDetails', { email });
+      } else {
+        Alert.alert('Error', 'Invalid verification code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
+    }
   };
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   const showHint = () => {
-    Alert.alert(
-      'Verification Code Hint',
-      'Enter the 6-digit code sent to your registered phone number.',
-      [{ text: 'Okay' }]
-    );
+    Alert.alert('Verification Code Hint', 'Enter the 6-digit code sent to your registered phone number.', [{ text: 'Okay' }]);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create an Account</Text>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>
-          Please enter the verification code that was sent to your phone to proceed
-        </Text>
+        <Text style={styles.label}>Please enter the verification code that was sent to your phone to proceed</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter verification code"
           keyboardType="number-pad"
           value={verificationCode}
           onChangeText={setVerificationCode}
-          maxLength={6} // Limit input to 6 digits
+          maxLength={6}
         />
         <TouchableOpacity onPress={showHint} style={styles.hintButton}>
           <Text style={styles.hintIcon}>❗</Text>
