@@ -1,21 +1,32 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
 
 const EnterDeliveryCompanyScreen = ({ navigation, route }) => {
   const [companyName, setCompanyName] = useState('');
-  const { phoneNumber } = route.params; // Retrieve the phone number from the previous screen
+  const { phoneNumber } = route.params;
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!companyName.trim()) {
       Alert.alert('Company Name Required', 'Please enter your delivery company name to proceed.');
-      return; //Validate to ensure the input is not empty
+      return;
     }
-  
-    // Navigate to SelectDeliveryCompanyScreen
-    navigation.navigate('SelectDeliveryCompany');
-  };
-  const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/delivery/request-code', {
+        companyName,
+        phoneNumber,
+      });
+      
+      if (response.status === 200) {
+        Alert.alert('Success', 'Your delivery access code has been requested.');
+        navigation.navigate('SelectDeliveryCompany', { companyName, phoneNumber });
+      } else {
+        Alert.alert('Error', 'Failed to request access code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
+    }
   };
 
   return (
@@ -31,20 +42,16 @@ const EnterDeliveryCompanyScreen = ({ navigation, route }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
           <Text style={styles.buttonText}>Back</Text> 
         </TouchableOpacity>
         <TouchableOpacity
-          style={[
-            styles.button,
-            !companyName.trim() && styles.disabledButton, 
-          ]}
-          onPress={handleNext} 
-          disabled={!companyName.trim()} 
+          style={[styles.button, !companyName.trim() && styles.disabledButton]}
+          onPress={handleNext}
+          disabled={!companyName.trim()}
         >
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
-          
       </View>
     </View>
   );
@@ -109,4 +116,3 @@ const styles = StyleSheet.create({
 });
 
 export default EnterDeliveryCompanyScreen;
- 
