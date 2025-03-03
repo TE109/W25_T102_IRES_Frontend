@@ -1,37 +1,37 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput,  StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import axios from 'axios';
 
-//Delivery Screen
-//Nevigation to confirmation screen
-//Use useState to handle Data
 const DeliveryScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  //Add the function for event listener to navigate
   const handleNoAccessCode = () => {
-    navigation.navigate('RequestDeliveryCode'); // Navigate to RequestDeliveryCodeScreen to request Access code
+    navigation.navigate('RequestDeliveryCode');
   };
 
-  const handleEnter = () => {
-    const phoneRegex = /^[0-9]{10}$/; // phone number validation, 10 digita
+  const handleEnter = async () => {
+    const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-    navigation.navigate('Confirmation', { type: 'delivery' }); //Navigate to confirmation screen // para: 'delivery'
+    
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/delivery/verify', { phoneNumber });
+      if (response.data.success) {
+        navigation.navigate('Confirmation', { type: 'delivery' });
+      } else {
+        Alert.alert('Error', response.data.message || 'Invalid delivery access code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Failed to verify phone number.');
+    }
   };
-
-  const handleBack = () => {
-
-    navigation.goBack(); // Navigate back to the previous screen
-    };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Delivery-In</Text>
-      <Text style={styles.subtitle}>
-        Please enter the access code sent to your phone number
-      </Text>
+      <Text style={styles.subtitle}>Please enter the access code sent to your phone number</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter phone number"
@@ -41,53 +41,44 @@ const DeliveryScreen = ({ navigation }) => {
         maxLength={10}
       />
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
-          <Text style={styles.buttonText}>Back</Text> 
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+          <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[
-            styles.button, 
-            !phoneNumber && styles.disabledButton,
-          ]}
-          onPress={handleEnter} 
-          disabled={!phoneNumber} 
+          style={[styles.button, !phoneNumber && styles.disabledButton]}
+          onPress={handleEnter}
+          disabled={!phoneNumber}
         >
           <Text style={styles.buttonText}>Enter</Text>
         </TouchableOpacity>
       </View>
-      {/*Handle navigation to RequestDeliveryCodeScreen to request Access code from the handleNoAccessCode function */}
       <TouchableOpacity style={styles.noCodeButton} onPress={handleNoAccessCode}>
-        <Text style={styles.buttonText}>I don't have access code</Text> 
+        <Text style={styles.buttonText}>I don't have access code</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f5f2e3',
-        paddingHorizontal: 20,
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        color: 'black',
-        marginBottom: 20,
-    },
-    subtitle: {
-        fontSize: 18,
-        color: 'black',
-        marginBottom: 40,
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        width: '90%',
-    },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f2e3',
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'black',
+    marginBottom: 20,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: 'black',
+    marginBottom: 40,
+  },
   input: {
     width: '80%',
     height: 50,
@@ -97,6 +88,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 30,
     backgroundColor: 'white',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '90%',
   },
   button: {
     backgroundColor: '#D3D3D3',
@@ -120,8 +116,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#000',
     textAlign: 'center',
-  }
-
+  },
 });
 
 export default DeliveryScreen;
