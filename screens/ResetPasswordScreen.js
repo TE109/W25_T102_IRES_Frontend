@@ -1,24 +1,32 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
 
 const ResetPasswordScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (!email.trim() || !newPassword.trim()) {
       Alert.alert('Invalid Input', 'Both fields are required.');
       return;
     }
-  
-    // Logic to reset password
-    Alert.alert('Success', 'Password has been reset.');
-    navigation.navigate('ResetPasswordConfirmation');
-  };
-  
 
-  const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/admin/reset-password', {
+        email,
+        newPassword,
+      });
+
+      if (response.status === 200) {
+        Alert.alert('Success', 'Password has been reset.');
+        navigation.navigate('ResetPasswordConfirmation');
+      } else {
+        Alert.alert('Error', 'Failed to reset password.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
+    }
   };
 
   return (
@@ -41,7 +49,7 @@ const ResetPasswordScreen = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleReset}>
