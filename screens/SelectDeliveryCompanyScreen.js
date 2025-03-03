@@ -1,36 +1,31 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Button } from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // For dropdown functionality
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';
 
-//Added default data of company located inside our building
-//Use useState to handle inputs
 const SelectDeliveryCompanyScreen = ({ navigation }) => {
   const [selectedCompany, setSelectedCompany] = useState('');
+  const [companies, setCompanies] = useState([]);
 
-  // List of companies by default at the building
-  const companies = [
-    'Amazon',
-    'RBC',
-    'THJ',
-    'Cats co'
-  ];
+  useEffect(() => {
+    fetchCompanies();
+  }, []);
 
-  //Similar concept using handleNext and handleBack for event Listeners
-  //Validation and navigate to Waiting for Approval-Devlivery
+  const fetchCompanies = async () => {
+    try {
+      const response = await axios.get('http://10.0.2.2:3000/api/v1/company');
+      setCompanies(response.data);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to load companies from the backend.');
+    }
+  };
 
   const handleNext = () => {
     if (!selectedCompany) {
       Alert.alert('Company Not Selected', 'Please select a company to proceed.');
       return;
     }
-  
-    // Navigate to the WaitingForApprovalDeliveryScreen
-    navigation.navigate('WaitingForApprovalDelivery');
-  };
-  
-
-  const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.navigate('WaitingForApprovalDelivery', { selectedCompany });
   };
 
   return (
@@ -44,29 +39,23 @@ const SelectDeliveryCompanyScreen = ({ navigation }) => {
             onValueChange={(itemValue) => setSelectedCompany(itemValue)}
           >
             <Picker.Item label="Select a company..." value="" />
-            {companies.map((company, index) => (
-              <Picker.Item key={index} label={company} value={company} />
+            {companies.map((company) => (
+              <Picker.Item key={company.id} label={company.companyName} value={company.companyName} />
             ))}
           </Picker>
         </View>
       </View>
       <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        {/*Disable button if no company is selected*/}
-        {/*isable styling if no selection*/}
         <TouchableOpacity
-          style={[
-            styles.button,
-            !selectedCompany && styles.disabledButton, 
-          ]}
+          style={[styles.button, !selectedCompany && styles.disabledButton]}
           onPress={handleNext}
-          disabled={!selectedCompany} 
+          disabled={!selectedCompany}
         >
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
-         
       </View>
     </View>
   );
@@ -126,7 +115,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#000',
     textAlign: 'center',
-  }
+  },
 });
 
 export default SelectDeliveryCompanyScreen;
