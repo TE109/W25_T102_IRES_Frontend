@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // Use only this Picker
+import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';
 
 const SelectVisitorBusinessScreen = ({ navigation }) => {
   const [selectedBusiness, setSelectedBusiness] = useState('');
+  const [businesses, setBusinesses] = useState([]);
 
-  // List of businesses or people to visit by default
-  const businesses = [
-    'Amazon',
-    'RBC',
-    'THJ',
-    'Cats co',
-  ];
+  useEffect(() => {
+    fetchBusinesses();
+  }, []);
 
-  //handkeNext to validate the selection and navigate to Vistor Appoinment screen
+  const fetchBusinesses = async () => {
+    try {
+      const response = await axios.get('http://10.0.2.2:3000/api/v1/company');
+      setBusinesses(response.data);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to load businesses from the backend.');
+    }
+  };
+
   const handleNext = () => {
     if (!selectedBusiness) {
       Alert.alert('Selection Required', 'Please select who you are visiting.');
@@ -22,32 +28,26 @@ const SelectVisitorBusinessScreen = ({ navigation }) => {
     navigation.navigate('VisitorAppointment', { business: selectedBusiness });
   };
 
-  const handleBack = () => {
-    navigation.goBack();
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Request entrance code as a visitor</Text>
       <View style={styles.dropdownContainer}>
         <Text style={styles.subtitle}>Please select who you are visiting.</Text>
-        {/*Show list of business from saved data*/}
         <View style={styles.pickerContainer}>
           <Picker
             selectedValue={selectedBusiness}
-            onValueChange={(itemValue) => setSelectedBusiness(itemValue)} 
+            onValueChange={(itemValue) => setSelectedBusiness(itemValue)}
             style={styles.picker}
           >
             <Picker.Item label="Select an option" value="" />
-            {businesses.map((business, index) => (
-              <Picker.Item key={index} label={business} value={business} />
+            {businesses.map((business) => (
+              <Picker.Item key={business.id} label={business.companyName} value={business.companyName} />
             ))}
           </Picker>
         </View>
       </View>
-      
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}> 
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}> 
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleNext}>
