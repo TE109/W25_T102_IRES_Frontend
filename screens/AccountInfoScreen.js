@@ -1,8 +1,36 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { getToken } from './TokenStorage';
 
 const AccountInfoScreen = ({ navigation }) => {
-  const userEmail = "admin@example.com"; // Replace this with dynamic email if needed
+  const [userEmail, setUserEmail] = useState('Loading...');
+
+  useEffect(() => {
+    const fetchAccountInfo = async () => {
+      try {
+        const token = await getToken();
+        const response = await fetch('http://10.0.2.2:3000/api/v1/admin/account', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setUserEmail(result.email);
+        } else {
+          Alert.alert('Error', result.message || 'Failed to fetch account info');
+        }
+      } catch (error) {
+        Alert.alert('Error', error.message);
+      }
+    };
+
+    fetchAccountInfo();
+  }, []);
 
   const handleResetPassword = () => {
     navigation.navigate('ResetPassword'); // Navigate to the ResetPassword screen

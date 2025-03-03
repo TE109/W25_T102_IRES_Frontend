@@ -3,23 +3,22 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import axios from 'axios';
 
 const EnterPhoneNumberScreen = ({ navigation, route }) => {
+  const { email, password } = route.params;
   const [phoneNumber, setPhoneNumber] = useState('');
-  const { email, password } = route.params || {};
 
-  const handleNext = async () => {
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(phoneNumber)) {
+  const handleSignup = async () => {
+    if (!/^[0-9]{10}$/.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-
     try {
-      const response = await axios.post('http://10.0.2.2:3000/api/v1/admin/verify-phone', {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/admin/signup', {
+        email,
+        password,
         phoneNumber,
       });
-
-      Alert.alert('Success', 'Phone number verified. Enter the code next.');
-      navigation.navigate('EnterVerificationCode', { email, password, phoneNumber });
+      Alert.alert('Success', 'Account created successfully!');
+      navigation.navigate('Login');
     } catch (error) {
       Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
     }
@@ -28,28 +27,16 @@ const EnterPhoneNumberScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Enter Phone Number</Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Phone Number</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter phone number"
-          keyboardType="number-pad"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          maxLength={10}
-        />
-        <TouchableOpacity onPress={showHint} style={styles.hintButton}>
-          <Text style={styles.hintIcon}>❗</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
-          <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={handleNext}>
-        <Text style={styles.buttonText}>Next</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter phone number"
+        keyboardType="number-pad"
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+      />
+      <TouchableOpacity style={styles.button} onPress={handleSignup}>
+        <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
-      </View>
     </View>
   );
 };

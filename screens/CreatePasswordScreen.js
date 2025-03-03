@@ -2,64 +2,30 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
 const CreatePasswordScreen = ({ navigation, route }) => {
-  const { email } = route.params; // Get email passed from previous screen
+  const { email } = route.params;
   const [password, setPassword] = useState('');
-  const [hintVisible, setHintVisible] = useState(false);
 
   const handleNext = () => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/; // 8–12 chars, letters & numbers
-    if (!passwordRegex.test(password)) {
-      Alert.alert('Invalid Password', 'Your password must be 8–12 characters and include letters and numbers.');
+    if (password.length < 8) {
+      Alert.alert('Weak Password', 'Password must be at least 8 characters long.');
       return;
     }
-
-    // Proceed to the next screen, passing email & password
-    navigation.navigate('EnterPhoneNumber', { email, password });
-  };
-
-  const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
-  };
-
-  const toggleHint = () => {
-    setHintVisible(!hintVisible); // Toggle password hint
+    navigation.navigate('EnterPhoneNumberScreen', { email, password });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Create a password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Create a password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
-        <TouchableOpacity onPress={toggleHint} style={styles.hintButton}>
-          <Text style={styles.hintIcon}>ℹ️</Text>
-        </TouchableOpacity>
-      </View>
-      {hintVisible && (
-        <View style={styles.hintContainer}>
-          <Text style={styles.hintText}>Password requirements:</Text>
-          <Text style={styles.hintDetail}>8–12 characters</Text>
-          <Text style={styles.hintDetail}>Must include letters & numbers</Text>
-          <Text style={styles.hintDetail}>No spaces allowed</Text>
-          <TouchableOpacity onPress={toggleHint}>
-            <Text style={styles.closeHint}>Got it</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
-          <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.title}>Create Password</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      <TouchableOpacity style={styles.button} onPress={handleNext}>
+        <Text style={styles.buttonText}>Next</Text>
+      </TouchableOpacity>
     </View>
   );
 };
