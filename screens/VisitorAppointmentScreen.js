@@ -1,19 +1,32 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-//Visitor Appoinment Screen
-//Also added handler functions as the previous screens for event Listeners
-const VisitorAppointmentScreen = ({ navigation }) => {
-  const [appointmentTime, setAppointmentTime] = useState('');
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
 
-  //navigate to Waiting for approval - visitor
-  //appoinmentTime param
-  const handleNext = () => {
-    // Proceed to the next step (or skip if no time entered)
-    navigation.navigate('WaitingForApprovalVisitor', { appointmentTime });
+const VisitorAppointmentScreen = ({ navigation, route }) => {
+  const [appointmentTime, setAppointmentTime] = useState('');
+  const { fullName, phoneNumber, business } = route.params;
+
+  const handleNext = async () => {
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/visitor/appointment', {
+        fullName,
+        phoneNumber,
+        business,
+        appointmentTime: appointmentTime || 'Not specified',
+      });
+      if (response.status === 200) {
+        Alert.alert('Success', 'Your appointment has been recorded.');
+        navigation.navigate('WaitingForApprovalVisitor', { appointmentTime });
+      } else {
+        Alert.alert('Error', 'Failed to submit appointment request.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
+    }
   };
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate to the previous screen
+    navigation.goBack();
   };
 
   return (
