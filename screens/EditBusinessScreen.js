@@ -7,51 +7,52 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import axios from 'axios';
 
 const EditBusinessScreen = ({ route, navigation }) => {
   const { business, updateBusiness } = route.params;
 
-  const [businessName, setBusinessName] = useState(business?.name || '');
-  const [floorNumber, setFloorNumber] = useState(business?.floor || '');
-  const [roomNumber, setRoomNumber] = useState(business?.room || '');
-  const [phoneNumber, setPhoneNumber] = useState(business?.phone || '');
+  const [businessName, setBusinessName] = useState(business?.companyName || '');
+  const [floorNumber, setFloorNumber] = useState(business?.companyFloor || '');
+  const [roomNumber, setRoomNumber] = useState(business?.companyRoom || '');
+  const [phoneNumber, setPhoneNumber] = useState(business?.companyPhone || '');
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const phoneRegex = /^[0-9]{10}$/;
-
     if (!businessName.trim() || !phoneNumber.trim()) {
       Alert.alert('Missing Information', 'Business name and phone number are required.');
       return;
     }
-
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
 
     const updatedBusiness = {
-      ...business,
-      name: businessName.trim(),
-      floor: floorNumber.trim() || 'N/A',
-      room: roomNumber.trim() || 'N/A',
-      phone: phoneNumber.trim(),
+      companyName: businessName.trim(),
+      companyFloor: floorNumber.trim() || 'N/A',
+      companyRoom: roomNumber.trim() || 'N/A',
+      companyPhone: phoneNumber.trim(),
     };
 
-    // Call the function passed via navigation params
-    if (typeof updateBusiness === 'function') {
-      updateBusiness(updatedBusiness); // Call update function
-      navigation.goBack(); // Navigate back
-    } else {
-      Alert.alert('Error', 'Unable to update business. Please try again.');
+    try {
+      const response = await axios.put(`http://10.0.2.2:3000/api/v1/company/${business.id}`, updatedBusiness);
+      if (response.status === 200) {
+        updateBusiness({ ...updatedBusiness, id: business.id });
+        Alert.alert('Success', 'Business updated successfully.');
+        navigation.goBack();
+      } else {
+        Alert.alert('Error', 'Failed to update business.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Edit Business/Company</Text>
-      <Text style={styles.instructions}>
-        Edit information about the business or company.
-      </Text>
+      <Text style={styles.instructions}>Edit information about the business or company.</Text>
 
       <View style={styles.inputContainer}>
         <TextInput
