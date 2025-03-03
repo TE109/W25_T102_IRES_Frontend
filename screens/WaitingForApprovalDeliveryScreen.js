@@ -1,24 +1,44 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import axios from 'axios';
 
-const WaitingForApprovalDeliveryScreen = ({ navigation }) => {
-  const handleMainScreen = () => {
-    navigation.navigate('CheckIn'); // Navigate  to the checkin screen
-  };
+const WaitingForApprovalDeliveryScreen = ({ navigation, route }) => {
+  const { phoneNumber } = route.params;
+  const [isApproved, setIsApproved] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkApprovalStatus = async () => {
+      try {
+        const response = await axios.get(`http://10.0.2.2:3000/api/v1/delivery/status?phoneNumber=${phoneNumber}`);
+        if (response.data.approved) {
+          setIsApproved(true);
+          Alert.alert('Approved', 'Your delivery has been approved!');
+          navigation.navigate('Confirmation', { type: 'delivery' });
+        }
+      } catch (error) {
+        Alert.alert('Error', 'Failed to check approval status.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const interval = setInterval(checkApprovalStatus, 5000);
+    return () => clearInterval(interval);
+  }, [navigation, phoneNumber]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Request a new delivery entrance code</Text>
       <View style={styles.messageContainer}>
-        <Text style={styles.message}>
-          Please wait for a text message with instructions.
-        </Text>
-        <Text style={styles.message}>Waiting for approval.....</Text>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#000" />
+        ) : (
+          <Text style={styles.message}>Waiting for approval.....</Text>
+        )}
       </View>
-      <Text style={styles.instruction}>
-        Please tap the button to go back to the main screen.
-      </Text>
-      <TouchableOpacity style={styles.button} onPress={handleMainScreen}>
+      <Text style={styles.instruction}>Please wait for a text message with instructions.</Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckIn')}>
         <Text style={styles.buttonText}>Main Screen</Text>
       </TouchableOpacity>
     </View>
