@@ -1,33 +1,32 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-//Request Vistor Screen
-//Use useState to handle input
-//passing param from Request Vistor Code handleNext function
+import axios from 'axios';
+
 const RequestVisitorPhoneScreen = ({ navigation, route }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
-  const { fullName } = route.params; // Retrieve the full name from the previous screen of input from handleNext
+  const { fullName } = route.params;
 
-  //Handle validation and navigate to Visitor Reason once the validation passed
-  const handleNext = () => {
-    const phoneRegex = /^[0-9]{10}$/; // Validate phone number (10 digits)
+  const handleNext = async () => {
+    const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-
-    // Simulate sending access code request
-    Alert.alert(
-      'Access Code Requested',
-      `An access code has been sent to the phone number: ${phoneNumber} for ${fullName}.`
-    );
-
-    // Navigate back to the main screen
-    navigation.navigate('VisitorReason');
-  };
-
-  //Similarly handleback to navigate previous action
-  const handleBack = () => {
-    navigation.goBack(); // Go back to the previous screen
+    
+    try {
+      const response = await axios.post('http://10.0.2.2:3000/api/v1/visitor/request-code', {
+        fullName,
+        phoneNumber,
+      });
+      if (response.status === 200) {
+        Alert.alert('Success', 'Your visitor access code has been requested.');
+        navigation.navigate('VisitorReason', { fullName, phoneNumber });
+      } else {
+        Alert.alert('Error', 'Failed to request a visitor code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong.');
+    }
   };
 
   return (
@@ -41,11 +40,11 @@ const RequestVisitorPhoneScreen = ({ navigation, route }) => {
           keyboardType="number-pad"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
-          maxLength={10} // Limit input to 10 digits
+          maxLength={10}
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}> 
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}> 
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleNext}> 
