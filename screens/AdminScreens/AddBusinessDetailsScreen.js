@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getToken } from './TokenStorage';
+import { getToken } from '../TokenStorage';
 import {
   View,
   Text,
