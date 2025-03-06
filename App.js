@@ -5,38 +5,37 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 //Import screens 
 import CheckInScreen from './screens/CheckInScreen';
-import VisitorInScreen from './screens/VisitorInScreen';
-import DeliveryScreen from './screens/DeliveryScreen';
+import VisitorInScreen from './screens/VisitorScreens/VisitorInScreen';
+import DeliveryScreen from './screens/DeliveryScreens/DeliveryScreen';
 import ConfirmationScreen from './screens/ConfirmationScreen';
-import RequestVisitorCodeScreen from './screens/RequestVisitorCodeScreen';
-import RequestVisitorPhoneScreen from './screens/RequestVisitorPhoneScreen';
-import EnterDeliveryCompanyScreen from './screens/EnterDeliveryCompanyScreen';
-import SelectDeliveryCompanyScreen from './screens/SelectDeliveryCompanyScreen';
-import RequestDeliveryCodeScreen from './screens/RequestDeliveryCodeScreen';
-import WaitingForApprovalDeliveryScreen from './screens/WaitingForApprovalDeliveryScreen';
-import VisitorReasonScreen from './screens/VisitorReasonScreen';
-import SelectVisitorBusinessScreen from './screens/SelectVisitorBusinessScreen';
-import VisitorAppointmentScreen from './screens/VisitorAppointmentScreen';
-import WaitingForApprovalVisitorScreen from './screens/WaitingForApprovalVisitorScreen';
-import Welcome from './screens/Welcome';
-import SignInOrSignUpScreen from './screens/SignInOrSignUpScreen';
-import SignInScreen from './screens/SignInScreen';
-import ResetPasswordScreen from './screens/ResetPasswordScreen';
-import ResetPasswordConfirmationScreen from './screens/ResetPasswordConfirmationScreen';
-import CreateAccountScreen from './screens/CreateAccountScreen';
-import CreatePasswordScreen from './screens/CreatePasswordScreen';
-import EnterPhoneNumberScreen from './screens/EnterPhoneNumberScreen';
-import EnterVerificationCodeScreen from './screens/EnterVerificationCodeScreen';
-import AddBusinessDetailsScreen from './screens/AddBusinessDetailsScreen';
-import BusinessOverviewScreen from './screens/BusinessOverviewScreen';
-import EditBusinessScreen from './screens/EditBusinessScreen';
-import FinishAccountSetupScreen from './screens/FinishAccountSetupScreen';
-import AdminMenuScreen from './screens/AdminMenuScreen';
-import CheckInIntroductionScreen from './screens/CheckInIntroductionScreen';
-import AccountInfoScreen from './screens/AccountInfoScreen';
-import SupportScreen from './screens/SupportScreen';
-import EditBusinessOverview from './screens/EditBusinessOverview';
-import AddMoreBusiness from './screens/AddMoreBusiness'
+import RequestVisitorCodeScreen from './screens/VisitorScreens/RequestVisitorCodeScreen';
+import RequestVisitorPhoneScreen from './screens/VisitorScreens/RequestVisitorPhoneScreen';
+import EnterDeliveryCompanyScreen from './screens/DeliveryScreens/EnterDeliveryCompanyScreen';
+import SelectDeliveryCompanyScreen from './screens/DeliveryScreens/SelectDeliveryCompanyScreen';
+import RequestDeliveryCodeScreen from './screens/DeliveryScreens/RequestDeliveryCodeScreen';
+import WaitingForApprovalDeliveryScreen from './screens/DeliveryScreens/WaitingForApprovalDeliveryScreen';
+import VisitorReasonScreen from './screens/VisitorScreens/VisitorReasonScreen';
+import SelectVisitorBusinessScreen from './screens/VisitorScreens/SelectVisitorBusinessScreen';
+import VisitorAppointmentScreen from './screens/VisitorScreens/VisitorTimeScreen';
+import WaitingForApprovalVisitorScreen from './screens/VisitorScreens/WaitingForApprovalVisitorScreen';
+import SignInOrSignUpScreen from './screens/LoginScreens/SignInOrSignUpScreen';
+import SignInScreen from './screens/LoginScreens/SignInScreen';
+import ResetPasswordScreen from './screens/LoginScreens/ResetPasswordScreen';
+import ResetPasswordConfirmationScreen from './screens/LoginScreens/ResetPasswordConfirmationScreen';
+import CreateAccountScreen from './screens/LoginScreens/CreateAccountScreen';
+import CreatePasswordScreen from './screens/LoginScreens/CreatePasswordScreen';
+import EnterPhoneNumberScreen from './screens/LoginScreens/EnterPhoneNumberScreen';
+import EnterVerificationCodeScreen from './screens/LoginScreens/EnterVerificationCodeScreen';
+import AddBusinessDetailsScreen from './screens/AdminScreens/AddBusinessDetailsScreen';
+import BusinessOverviewScreen from './screens/AdminScreens/BusinessOverviewScreen';
+import EditBusinessScreen from './screens/AdminScreens/EditBusinessScreen';
+import FinishAccountSetupScreen from './screens/AdminScreens/FinishAccountSetupScreen';
+import AdminMenuScreen from './screens/AdminScreens/AdminMenuScreen';
+import CheckInIntroductionScreen from './screens/AdminScreens/CheckInIntroductionScreen';
+import AccountInfoScreen from './screens/AdminScreens/AccountInfoScreen';
+import SupportScreen from './screens/AdminScreens/SupportScreen';
+import EditBusinessOverview from './screens/AdminScreens/EditBusinessOverview';
+import AddMoreBusiness from './screens/AdminScreens/AddMoreBusiness'
 
 const Stack = createStackNavigator();
 
@@ -66,7 +65,6 @@ export default function App() {
         <Stack.Screen name="SelectVisitorBusiness" component={SelectVisitorBusinessScreen} />
         <Stack.Screen name="VisitorAppointment" component={VisitorAppointmentScreen} />
         <Stack.Screen name="WaitingForApprovalVisitor" component={WaitingForApprovalVisitorScreen} />
-        <Stack.Screen name="Welcome" component={Welcome} />
         <Stack.Screen name="SignInOrSignUp" component={SignInOrSignUpScreen} />
         <Stack.Screen name="SignInScreen" component={SignInScreen} />
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />

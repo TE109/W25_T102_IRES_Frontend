@@ -11,7 +11,11 @@ const CreateAccountScreen = ({ navigation }) => {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
-    navigation.navigate('CreatePasswordScreen', { email });
+    navigation.navigate('CreatePassword', { email });
+  };
+
+  const handleBack = () => {
+    navigation.goBack(); // Navigate back to the previous screen
   };
 
   return (
@@ -27,6 +31,10 @@ const CreateAccountScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={handleNext}>
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <Text style={styles.buttonText}>Back</Text>
+      </TouchableOpacity>
+      
     </View>
   );
 };

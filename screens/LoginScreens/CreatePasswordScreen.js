@@ -10,7 +10,7 @@ const CreatePasswordScreen = ({ navigation, route }) => {
       Alert.alert('Weak Password', 'Password must be at least 8 characters long.');
       return;
     }
-    navigation.navigate('EnterPhoneNumberScreen', { email, password });
+    navigation.navigate('EnterPhoneNumber', { email, password });
   };
 
   return (
