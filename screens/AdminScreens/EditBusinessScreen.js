@@ -7,16 +7,18 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { getToken } from './TokenStorage';
 
 const EditBusinessScreen = ({ route, navigation }) => {
-  const { business, updateBusiness } = route.params;
+  const { business } = route.params;
 
-  const [businessName, setBusinessName] = useState(business?.name || '');
-  const [floorNumber, setFloorNumber] = useState(business?.floor || '');
-  const [roomNumber, setRoomNumber] = useState(business?.room || '');
-  const [phoneNumber, setPhoneNumber] = useState(business?.phone || '');
+  const [businessName, setBusinessName] = useState(business?.companyName || '');
+  const [floorNumber, setFloorNumber] = useState(business?.companyFloor || '');
+  const [roomNumber, setRoomNumber] = useState(business?.companyRoom || '');
+  const [phoneNumber, setPhoneNumber] = useState(business?.companyPhone || '');
+  const [loading, setLoading] = useState(false);
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const phoneRegex = /^[0-9]{10}$/;
 
     if (!businessName.trim() || !phoneNumber.trim()) {
@@ -30,28 +32,43 @@ const EditBusinessScreen = ({ route, navigation }) => {
     }
 
     const updatedBusiness = {
-      ...business,
-      name: businessName.trim(),
-      floor: floorNumber.trim() || 'N/A',
-      room: roomNumber.trim() || 'N/A',
-      phone: phoneNumber.trim(),
+      companyName: businessName.trim(),
+      companyFloor: floorNumber.trim() || 'N/A',
+      companyRoom: roomNumber.trim() || 'N/A',
+      companyPhone: phoneNumber.trim(),
     };
 
-    // Call the function passed via navigation params
-    if (typeof updateBusiness === 'function') {
-      updateBusiness(updatedBusiness); // Call update function
-      navigation.goBack(); // Navigate back
-    } else {
-      Alert.alert('Error', 'Unable to update business. Please try again.');
+    try {
+      setLoading(true);
+      const token = await getToken();
+      const response = await fetch(`http://10.0.2.2:3000/api/v1/company/${business._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedBusiness),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', 'Business updated successfully.');
+        navigation.goBack();
+      } else {
+        Alert.alert('Error', result.message || 'Failed to update business.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Edit Business/Company</Text>
-      <Text style={styles.instructions}>
-        Edit information about the business or company.
-      </Text>
+      <Text style={styles.instructions}>Edit information about the business or company.</Text>
 
       <View style={styles.inputContainer}>
         <TextInput
@@ -81,12 +98,12 @@ const EditBusinessScreen = ({ route, navigation }) => {
           onChangeText={setPhoneNumber}
           keyboardType="phone-pad"
         />
-        <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
-          <Text style={styles.updateButtonText}>Update</Text>
+        <TouchableOpacity style={styles.updateButton} onPress={handleUpdate} disabled={loading}>
+          <Text style={styles.updateButtonText}>{loading ? 'Updating...' : 'Update'}</Text>
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} disabled={loading}>
         <Text style={styles.backButtonText}>Back</Text>
       </TouchableOpacity>
     </View>
@@ -132,7 +149,7 @@ const styles = StyleSheet.create({
   },
   updateButtonText: {
     fontSize: 16,
-    color: '#FFF',
+    color: '#000',
   },
   backButton: {
     marginTop: 20,
