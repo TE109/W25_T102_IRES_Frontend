@@ -1,21 +1,42 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 
-const EnterVerificationCodeScreen = ({ navigation }) => {
+const EnterVerificationCodeScreen = ({ route, navigation }) => {
+  const { email, phoneNumber } = route.params; // Get email & phone from previous screen
   const [verificationCode, setVerificationCode] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleNext = () => {
-    const codeRegex = /^[0-9]{6}$/; // Assuming the verification code is 6 digits
+  const handleNext = async () => {
+    const codeRegex = /^[0-9]{6}$/;
     if (!codeRegex.test(verificationCode)) {
       Alert.alert('Invalid Code', 'Please enter a valid 6-digit verification code.');
       return;
     }
-    
-    navigation.navigate('AddBusinessDetails')
+
+    try {
+      setLoading(true);
+      const response = await fetch('http://10.0.2.2:3000/api/v1/auth/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, phoneNumber, code: verificationCode }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        navigation.navigate('AddBusinessDetails', { email, phoneNumber });
+      } else {
+        Alert.alert('Error', result.message || 'Invalid verification code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   const showHint = () => {
@@ -39,18 +60,18 @@ const EnterVerificationCodeScreen = ({ navigation }) => {
           keyboardType="number-pad"
           value={verificationCode}
           onChangeText={setVerificationCode}
-          maxLength={6} // Limit input to 6 digits
+          maxLength={6}
         />
         <TouchableOpacity onPress={showHint} style={styles.hintButton}>
           <Text style={styles.hintIcon}>❗</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={handleBack} disabled={loading}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Next</Text>
+        <TouchableOpacity style={styles.button} onPress={handleNext} disabled={loading}>
+          {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>Next</Text>}
         </TouchableOpacity>
       </View>
     </View>
