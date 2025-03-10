@@ -1,21 +1,41 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 
 const CreateAccountScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleNext = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple email validation regex
+  const handleNext = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
-    // Navigate to the next screen, passing the email
-    navigation.navigate('CreatePassword');
+
+    try {
+      setLoading(true);
+      const response = await fetch('http://10.0.2.2:3000/api/v1/auth/check-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        navigation.navigate('CreatePassword', { email });
+      } else {
+        Alert.alert('Error', result.message || 'This email is already registered.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   return (
@@ -32,11 +52,11 @@ const CreateAccountScreen = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={handleBack} disabled={loading}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Next</Text>
+        <TouchableOpacity style={styles.button} onPress={handleNext} disabled={loading}>
+          {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>Next</Text>}
         </TouchableOpacity>
       </View>
     </View>
@@ -86,6 +106,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     marginHorizontal: 10,
+    alignItems: 'center',
   },
   buttonText: {
     fontSize: 16,
