@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,19 +7,52 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
+import { getToken } from './TokenStorage'; // Ensure this retrieves JWT token
 
-const CreateAccountScreen = ({ navigation }) => {
+const AddBusinessDetailsScreen = ({ navigation }) => {
   const [businesses, setBusinesses] = useState([]);
   const [businessName, setBusinessName] = useState('');
   const [floorNumber, setFloorNumber] = useState('');
   const [roomNumber, setRoomNumber] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const handleAddBusiness = () => {
+  // Fetch businesses from the backend when the screen loads
+  useEffect(() => {
+    const fetchBusinesses = async () => {
+      try {
+        const token = await getToken();
+        const response = await fetch('http://10.0.2.2:3000/api/v1/company', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setBusinesses(result);
+        } else {
+          Alert.alert('Error', result.message || 'Failed to load businesses.');
+        }
+      } catch (error) {
+        Alert.alert('Error', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBusinesses();
+  }, []);
+
+  // Add a new business
+  const handleAddBusiness = async () => {
     const phoneRegex = /^[0-9]{10}$/;
+    const token = await getToken();
 
-    // Validation for required fields and phone number
     if (!businessName || !phoneNumber) {
       Alert.alert('Missing Information', 'Business name and phone number are required.');
       return;
@@ -30,15 +63,35 @@ const CreateAccountScreen = ({ navigation }) => {
       return;
     }
 
-    const newBusiness = {
-      id: Date.now().toString(),
-      name: businessName,
-      floor: floorNumber || 'N/A',
-      room: roomNumber || 'N/A',
-      phone: phoneNumber,
+    const companyData = {
+      companyName: businessName,
+      companyFloor: floorNumber || 'N/A',
+      companyRoom: roomNumber || 'N/A',
+      companyPhone: phoneNumber
     };
 
-    setBusinesses([...businesses, newBusiness]);
+    try {
+      const response = await fetch('http://10.0.2.2:3000/api/v1/company', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(companyData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setBusinesses([...businesses, result]);
+        Alert.alert('Company added successfully!');
+      } else {
+        Alert.alert(`Error: ${result.message || 'Something went wrong'}`);
+      }
+    } catch (error) {
+      Alert.alert(`Error: ${error.message}`);
+    }
+
     setBusinessName('');
     setFloorNumber('');
     setRoomNumber('');
@@ -55,69 +108,75 @@ const CreateAccountScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
-      <Text style={styles.instructions}>
-        Please enter each business or company located within this facility, along with the corresponding room or floor number. 
-        Don’t forget to click the 'Add' button to save each entry. Type 0 for floor or room number if it doesn't apply.
-      </Text>
+      <Text style={styles.title}>Add Business</Text>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Business/Company's Name"
-          value={businessName}
-          onChangeText={setBusinessName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Floor Number"
-          value={floorNumber}
-          onChangeText={setFloorNumber}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Room Number"
-          value={roomNumber}
-          onChangeText={setRoomNumber}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          keyboardType="phone-pad"
-        />
-        <TouchableOpacity style={styles.addButton} onPress={handleAddBusiness}>
-          <Text style={styles.addButtonText}>Add</Text>
-        </TouchableOpacity>
-      </View>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <>
+          <Text style={styles.instructions}>
+            Please enter each business or company located within this facility, along with the corresponding room or floor number.
+          </Text>
 
-      <FlatList
-        data={businesses}
-        renderItem={({ item }) => (
-          <View style={styles.businessItem}>
-            <Text style={styles.businessText}>{item.name}</Text>
-            <Text style={styles.businessText}>Floor: {item.floor}</Text>
-            <Text style={styles.businessText}>Room: {item.room}</Text>
-            <Text style={styles.businessText}>Phone: {item.phone}</Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Business/Company's Name"
+              value={businessName}
+              onChangeText={setBusinessName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Floor Number"
+              value={floorNumber}
+              onChangeText={setFloorNumber}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Room Number"
+              value={roomNumber}
+              onChangeText={setRoomNumber}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Phone Number"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="phone-pad"
+            />
+            <TouchableOpacity style={styles.addButton} onPress={handleAddBusiness}>
+              <Text style={styles.addButtonText}>Add</Text>
+            </TouchableOpacity>
           </View>
-        )}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
-      />
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-          <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, businesses.length > 0 ? styles.nextButton : styles.disabledButton]}
-          onPress={handleNext}
-          disabled={businesses.length === 0}
-        >
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
-      </View>
+          <FlatList
+            data={businesses}
+            renderItem={({ item }) => (
+              <View style={styles.businessItem}>
+                <Text style={styles.businessText}>{item.companyName}</Text>
+                <Text style={styles.businessText}>Floor: {item.companyFloor}</Text>
+                <Text style={styles.businessText}>Room: {item.companyRoom}</Text>
+                <Text style={styles.businessText}>Phone: {item.companyPhone}</Text>
+              </View>
+            )}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={styles.listContainer}
+          />
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+              <Text style={styles.buttonText}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, businesses.length > 0 ? styles.nextButton : styles.disabledButton]}
+              onPress={handleNext}
+              disabled={businesses.length === 0}
+            >
+              <Text style={styles.buttonText}>Next</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
     </View>
   );
 };
@@ -203,4 +262,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateAccountScreen;
+export default AddBusinessDetailsScreen;
