@@ -1,95 +1,89 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import {storeToken} from './TokenStorage';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { storeToken } from './TokenStorage';
 
 const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+  const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const handleSignIn  = async() => {
+  const handleSignIn = async () => {
     if (!email.trim() || !password.trim()) {
       Alert.alert('Error', 'Please fill in both fields.');
       return;
     }
 
-    try{
-      const response = await fetch('http://10.0.2.2:3000/api/v1/admin/login',{
+    try {
+      setLoading(true);
+      const response = await fetch('http://10.0.2.2:3000/api/v1/admin/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify({ email, password }),
       });
+
       const data = await response.json();
 
-      if(response.ok){
-        const token = data.token;
-
-        await storeToken(token);
-
+      if (response.ok) {
+        await storeToken(data.token);
         Alert.alert('Success', 'You are signed in!', [
           { text: 'OK', onPress: () => navigation.navigate('AdminMenuScreen') },
         ]);
-        
-      }else{
-        Alert.alert(data.message || 'Login failed');
+      } else {
+        Alert.alert('Error', data.message || 'Login failed');
       }
-
-    }catch (error){
-      console.log(error);
-      Alert.alert('Exception',error.message);
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
     }
-
   };
-
-  
 
   const handleResetPassword = () => {
     navigation.navigate('ResetPassword');
   };
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign in</Text>
+      <Text style={styles.title}>Sign In</Text>
       <View style={styles.inputContainer}>
-        <View style={styles.inputRow}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <Text style={styles.infoIcon}>❕</Text>
-        </View>
-        <View style={styles.inputRow}>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <View style={styles.passwordContainer}>
           <TextInput
             style={styles.input}
             placeholder="Password"
-            secureTextEntry
+            secureTextEntry={!passwordVisible}
             value={password}
             onChangeText={setPassword}
           />
-          <Text style={styles.infoIcon}>❕</Text>
+          <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
+            <Text style={styles.togglePassword}>{passwordVisible ? '👁️' : '🙈'}</Text>
+          </TouchableOpacity>
         </View>
       </View>
+
       <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
-        <Text style={styles.resetButtonText}>Reset password</Text>
+        <Text style={styles.resetButtonText}>Forgot Password?</Text>
       </TouchableOpacity>
+
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={handleBack} disabled={loading}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleSignIn}>
-          <Text style={styles.buttonText}>Sign in</Text>
+        <TouchableOpacity style={styles.button} onPress={handleSignIn} disabled={loading}>
+          {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>Sign In</Text>}
         </TouchableOpacity>
       </View>
     </View>
@@ -114,10 +108,10 @@ const styles = StyleSheet.create({
     width: '80%',
     marginBottom: 20,
   },
-  inputRow: {
+  passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    position: 'relative',
   },
   input: {
     flex: 1,
@@ -128,17 +122,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: '#FFF',
   },
-  infoIcon: {
+  togglePassword: {
     fontSize: 18,
     marginLeft: 10,
-    color: '#555',
+    color: '#007BFF',
   },
   resetButton: {
-    marginBottom: 20,
+    marginTop: 10,
   },
   resetButtonText: {
     fontSize: 16,
-    color: '#000',
+    color: '#007BFF',
     textDecorationLine: 'underline',
     textAlign: 'center',
   },
@@ -153,19 +147,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     marginHorizontal: 10,
+    alignItems: 'center',
   },
   buttonText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#000',
-  },
-  resetButton: {
-    marginTop: 20,
-  },
-  resetButtonText: {
-    fontSize: 16,
-    color: '#007BFF',
-    textDecorationLine: 'underline',
   },
 });
 
