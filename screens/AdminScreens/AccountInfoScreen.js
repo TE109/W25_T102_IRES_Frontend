@@ -1,24 +1,57 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { getToken } from './TokenStorage'; // Ensure this function retrieves JWT token
 
 const AccountInfoScreen = ({ navigation }) => {
-  const userEmail = "admin@example.com"; // Replace this with dynamic email if needed
+  const [userEmail, setUserEmail] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAccountInfo = async () => {
+      try {
+        const token = await getToken();
+        const response = await fetch('http://10.0.2.2:3000/api/v1/admin/me', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setUserEmail(result.email);
+        } else {
+          Alert.alert('Error', result.message || 'Failed to fetch account details.');
+        }
+      } catch (error) {
+        Alert.alert('Error', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAccountInfo();
+  }, []);
 
   const handleResetPassword = () => {
-    navigation.navigate('ResetPassword'); // Navigate to the ResetPassword screen
+    navigation.navigate('ResetPassword');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Account Info</Text>
 
-      {/* User Email Display */}
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{userEmail}</Text>
-      </View>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <View style={styles.infoContainer}>
+          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.value}>{userEmail || 'N/A'}</Text>
+        </View>
+      )}
 
-      {/* Reset Password Button */}
       <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
         <Text style={styles.resetButtonText}>Reset Password</Text>
       </TouchableOpacity>
