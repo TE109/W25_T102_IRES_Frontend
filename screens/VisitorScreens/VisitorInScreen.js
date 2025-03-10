@@ -1,33 +1,49 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 // Visitor Screen 
 const VisitorInScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleNoAccessCode = () => {
     navigation.navigate('RequestVisitorCode');
   };
 
-  const handleEnter = () => {
+  const handleEnter = async () => {
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-    navigation.navigate('Confirmation', { type: 'visitor' });
-  };
 
-  const handleBack = () => {
-    navigation.goBack();
+    try {
+      setLoading(true);
+      const response = await fetch('http://10.0.2.2:3000/api/v1/visitor/validate-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phoneNumber }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', 'Your visitor access is approved.');
+        navigation.navigate('Confirmation', { type: 'visitor' });
+      } else {
+        Alert.alert('Access Denied', result.message || 'Invalid visitor access code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Visitor-In</Text>
-      <Text style={styles.subtitle}>
-        Please enter the access code sent to your phone number.
-      </Text>
+      <Text style={styles.subtitle}>Please enter the access code sent to your phone number.</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter phone number"
@@ -37,19 +53,15 @@ const VisitorInScreen = ({ navigation }) => {
         maxLength={10}
       />
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={navigation.goBack} disabled={loading}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        {/*Apply disabled styling if no input*/}
         <TouchableOpacity
-          style={[
-            styles.button,
-            !phoneNumber && styles.disabledButton, 
-          ]}
+          style={[styles.button, !phoneNumber && styles.disabledButton]}
           onPress={handleEnter}
-          disabled={!phoneNumber}
+          disabled={!phoneNumber || loading}
         >
-          <Text style={styles.buttonText}>Enter</Text>
+          {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>Enter</Text>}
         </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.noCodeButton} onPress={handleNoAccessCode}>
@@ -103,7 +115,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   disabledButton: {
-    backgroundColor: '#A9A9A9', // Dimmed color for disabled button
+    backgroundColor: '#A9A9A9',
   },
   buttonText: {
     fontSize: 16,
@@ -122,9 +134,9 @@ const styles = StyleSheet.create({
   noCodeButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000', // Match other buttons' text color
+    color: '#000',
     textAlign: 'center',
-  }
+  },
 });
 
 export default VisitorInScreen;

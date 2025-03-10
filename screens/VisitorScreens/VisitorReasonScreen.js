@@ -5,14 +5,31 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 const VisitorReasonScreen = ({ navigation }) => {
   const [reason, setReason] = useState('');
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!reason.trim()) {
       Alert.alert('Invalid Input', 'Please enter the reason for your visit.');
       return;
     }
-    // Navigate to the confirmation or next step
-    navigation.navigate('SelectVisitorBusiness', { reason });
+  
+    try {
+      const response = await fetch('http://10.0.2.2:3000/api/v1/visitor/reason', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName, phoneNumber, reason }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        navigation.navigate('SelectVisitorBusiness', { fullName, phoneNumber, reason });
+      } else {
+        Alert.alert('Error', result.message || 'Failed to submit reason.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
   };
+  
 
   const handleBack = () => {
     navigation.goBack(); // Navigate back to the previous screen

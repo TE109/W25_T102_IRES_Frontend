@@ -7,10 +7,26 @@ const VisitorAppointmentScreen = ({ navigation }) => {
 
   //navigate to Waiting for approval - visitor
   //appoinmentTime param
-  const handleNext = () => {
-    // Proceed to the next step (or skip if no time entered)
-    navigation.navigate('WaitingForApprovalVisitor', { appointmentTime });
+  const handleNext = async () => {
+    try {
+      const response = await fetch('http://10.0.2.2:3000/api/v1/visitor/appointment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName, phoneNumber, reason, business, appointmentTime }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        navigation.navigate('WaitingForApprovalVisitor', { fullName, phoneNumber });
+      } else {
+        Alert.alert('Error', result.message || 'Failed to submit appointment.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
   };
+  
 
   const handleBack = () => {
     navigation.goBack(); // Navigate to the previous screen

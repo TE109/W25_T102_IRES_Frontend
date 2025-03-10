@@ -8,15 +8,31 @@ const RequestVisitorCodeScreen = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
 
   //handleNext function, validate input to prevent empty input and navigate
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!fullName.trim()) {
       Alert.alert('Full Name Required', 'Please enter your full name to proceed.');
       return;
     }
-
-    // Navigate to the phone input screen, passing the full name as a parameter
-    navigation.navigate('RequestVisitorPhone', { fullName });
+  
+    try {
+      const response = await fetch('http://10.0.2.2:3000/api/v1/visitor/request-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        navigation.navigate('RequestVisitorPhone', { fullName });
+      } else {
+        Alert.alert('Error', result.message || 'Failed to request visitor code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
   };
+  
 
   //handleBack function navigate to previous
   const handleBack = () => {

@@ -8,22 +8,33 @@ const RequestVisitorPhoneScreen = ({ navigation, route }) => {
   const { fullName } = route.params; // Retrieve the full name from the previous screen of input from handleNext
 
   //Handle validation and navigate to Visitor Reason once the validation passed
-  const handleNext = () => {
-    const phoneRegex = /^[0-9]{10}$/; // Validate phone number (10 digits)
+  const handleNext = async () => {
+    const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-
-    // Simulate sending access code request
-    Alert.alert(
-      'Access Code Requested',
-      `An access code has been sent to the phone number: ${phoneNumber} for ${fullName}.`
-    );
-
-    // Navigate back to the main screen
-    navigation.navigate('VisitorReason');
+  
+    try {
+      const response = await fetch('http://10.0.2.2:3000/api/v1/visitor/validate-phone', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName, phoneNumber }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        Alert.alert('Success', 'Access code sent to your phone.');
+        navigation.navigate('VisitorReason', { fullName, phoneNumber });
+      } else {
+        Alert.alert('Error', result.message || 'Phone number validation failed.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
   };
+  
 
   //Similarly handleback to navigate previous action
   const handleBack = () => {
