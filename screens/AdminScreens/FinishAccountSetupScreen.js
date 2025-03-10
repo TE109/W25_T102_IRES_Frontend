@@ -1,10 +1,36 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { getToken } from './TokenStorage';
 
 const FinishAccountSetupScreen = ({ navigation }) => {
-  const handleFinish = () => {
-    // Navigate to the desired next screen (e.g., Dashboard or HomeScreen)
-    navigation.navigate('AdminMenuScreen'); 
+  const [loading, setLoading] = useState(false);
+
+  const handleFinish = async () => {
+    try {
+      setLoading(true);
+      const token = await getToken();
+
+      const response = await fetch('http://10.0.2.2:3000/api/v1/account/setup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', 'Account setup completed!');
+        navigation.navigate('AdminMenuScreen');
+      } else {
+        Alert.alert('Error', result.message || 'Failed to complete account setup.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -15,11 +41,15 @@ const FinishAccountSetupScreen = ({ navigation }) => {
       </Text>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()} disabled={loading}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.finishButton]} onPress={handleFinish}>
-          <Text style={styles.buttonText}>Finish</Text>
+        <TouchableOpacity 
+          style={[styles.button, styles.finishButton]} 
+          onPress={handleFinish} 
+          disabled={loading}
+        >
+          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Finish</Text>}
         </TouchableOpacity>
       </View>
     </View>
