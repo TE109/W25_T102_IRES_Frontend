@@ -1,24 +1,42 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 
 const ResetPasswordScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (!email.trim() || !newPassword.trim()) {
       Alert.alert('Invalid Input', 'Both fields are required.');
       return;
     }
-  
-    // Logic to reset password
-    Alert.alert('Success', 'Password has been reset.');
-    navigation.navigate('ResetPasswordConfirmation');
+
+    try {
+      setLoading(true);
+      const response = await fetch('http://10.0.2.2:3000/api/v1/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: newPassword }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', 'Your password has been reset.');
+        navigation.navigate('ResetPasswordConfirmation');
+      } else {
+        Alert.alert('Error', result.message || 'Failed to reset password.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
   };
-  
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   return (
@@ -41,11 +59,11 @@ const ResetPasswordScreen = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={handleBack} disabled={loading}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleReset}>
-          <Text style={styles.buttonText}>Reset</Text>
+        <TouchableOpacity style={styles.button} onPress={handleReset} disabled={loading}>
+          {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>Reset</Text>}
         </TouchableOpacity>
       </View>
     </View>
