@@ -1,13 +1,59 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { getToken } from './TokenStorage';
 
 const AdminMenuScreen = ({ navigation }) => {
+  const [adminName, setAdminName] = useState('');
+  const [adminRole, setAdminRole] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAdminDetails = async () => {
+      try {
+        const token = await getToken();
+
+        if (!token) {
+          Alert.alert('Session Expired', 'Please log in again.');
+          navigation.replace('SignInScreen');
+          return;
+        }
+
+        const response = await fetch('http://10.0.2.2:3000/api/v1/admin/me', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setAdminName(result.name);
+          setAdminRole(result.role);
+        } else {
+          Alert.alert('Error', result.message || 'Failed to load admin details.');
+        }
+      } catch (error) {
+        Alert.alert('Error', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAdminDetails();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Menu</Text>
+      <Text style={styles.title}>Admin Menu</Text>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <Text style={styles.adminInfo}>Welcome, {adminName} ({adminRole})</Text>
+      )}
 
       <View style={styles.menuContainer}>
-        {/* Businesses/Companies Button */}
         <TouchableOpacity
           style={styles.menuButton}
           onPress={() => navigation.navigate('EditBusinessOverview')}
@@ -16,7 +62,6 @@ const AdminMenuScreen = ({ navigation }) => {
           <Text style={styles.menuText}>Businesses/Companies</Text>
         </TouchableOpacity>
 
-        {/* Check-In Button */}
         <TouchableOpacity
           style={styles.menuButton}
           onPress={() => navigation.navigate('CheckInIntroductionScreen')}
@@ -25,7 +70,6 @@ const AdminMenuScreen = ({ navigation }) => {
           <Text style={styles.menuText}>Check-In</Text>
         </TouchableOpacity>
 
-        {/* Account Info Button */}
         <TouchableOpacity
           style={styles.menuButton}
           onPress={() => navigation.navigate('AccountInfoScreen')}
@@ -34,7 +78,6 @@ const AdminMenuScreen = ({ navigation }) => {
           <Text style={styles.menuText}>Account Info</Text>
         </TouchableOpacity>
 
-        {/* Support Button */}
         <TouchableOpacity
           style={styles.menuButton}
           onPress={() => navigation.navigate('SupportScreen')}
@@ -57,6 +100,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  adminInfo: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#333',
     marginBottom: 20,
   },
   menuContainer: {
