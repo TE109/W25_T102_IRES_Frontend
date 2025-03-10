@@ -1,29 +1,33 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 const ResetPasswordConfirmationScreen = ({ navigation }) => {
-  const handleGoToMainMenu = () => {
-    // Navigate to the main menu (e.g., Home or Sign-In Screen)
-    navigation.navigate('SignInOrSignUp');
+  const handleGoToSignIn = () => {
+    navigation.navigate('SignInScreen'); // Default to Sign-In
   };
 
-  
+  const handleGoToAdminMenu = () => {
+    navigation.navigate('AdminMenuScreen'); // Option to return to Admin Menu
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Reset Password</Text>
+      <Text style={styles.title}>Password Reset Successful</Text>
       <Text style={styles.subtitle}>
-        Password has been reset. Please click the button to return to the main menu.
+        Your password has been reset. Please choose an option below to proceed.
       </Text>
-      
-      <TouchableOpacity style={styles.button} onPress={handleGoToMainMenu}>
-        
-        <Text style={styles.buttonText}>Go back to main menu</Text>
-        
+
+      <TouchableOpacity style={styles.button} onPress={handleGoToSignIn}>
+        <Text style={styles.buttonText}>Go to Sign In</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.secondaryButton} onPress={handleGoToAdminMenu}>
+        <Text style={styles.secondaryButtonText}>Go to Admin Menu</Text>
       </TouchableOpacity>
     </View>
   );
 };
-//may be preferable to return to the admin menu
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -43,25 +47,25 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 40,
   },
-  alertButton: {
-    backgroundColor: '#EAEAEA',
+  button: {
+    backgroundColor: '#007BFF',
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 8,
-    marginBottom: 20,
+    marginBottom: 15,
   },
-  alertButtonText: {
+  buttonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000',
+    color: '#FFF',
   },
-  button: {
+  secondaryButton: {
     backgroundColor: '#D3D3D3',
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 8,
   },
-  buttonText: {
+  secondaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#000',
