@@ -1,13 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-const CheckInScreen = ({ navigation }) => {
+const CheckInIntroductionScreen = ({ navigation }) => {
   const handleBack = () => {
     navigation.goBack();
   };
 
   const handleContinue = () => {
-    
     navigation.navigate('CheckIn'); 
   };
 
@@ -94,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CheckInScreen;
+export default CheckInIntroductionScreen;
