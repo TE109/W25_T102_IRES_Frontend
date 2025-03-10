@@ -1,26 +1,47 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Modal } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 
-const CreatePasswordScreen = ({ navigation }) => {
+const CreatePasswordScreen = ({ route, navigation }) => {
+  const { email } = route.params; // Get email from previous screen
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const [hintVisible, setHintVisible] = useState(false);
 
-  const handleNext = () => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/; // Password must be 8–12 characters with letters and numbers
+  const handleNext = async () => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/;
     if (!passwordRegex.test(password)) {
       Alert.alert('Invalid Password', 'Your password must be 8–12 characters and include letters and numbers.');
       return;
     }
-    // Navigate to the next screen, passing the password
-    navigation.navigate('EnterPhoneNumber');
+
+    try {
+      setLoading(true);
+      const response = await fetch('http://10.0.2.2:3000/api/v1/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        navigation.navigate('EnterPhoneNumber', { email });
+      } else {
+        Alert.alert('Error', result.message || 'Failed to register. Please try again.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   const toggleHint = () => {
-    setHintVisible(!hintVisible); // Toggle the visibility of the hint
+    setHintVisible(!hintVisible);
   };
 
   return (
@@ -51,11 +72,11 @@ const CreatePasswordScreen = ({ navigation }) => {
         </View>
       )}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={handleBack} disabled={loading}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Next</Text>
+        <TouchableOpacity style={styles.button} onPress={handleNext} disabled={loading}>
+          {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>Next</Text>}
         </TouchableOpacity>
       </View>
     </View>
@@ -139,6 +160,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     marginHorizontal: 10,
+    alignItems: 'center',
   },
   buttonText: {
     fontSize: 16,
