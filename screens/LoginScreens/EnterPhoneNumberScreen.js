@@ -1,22 +1,42 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 
-const EnterPhoneNumberScreen = ({ navigation }) => {
+const EnterPhoneNumberScreen = ({ route, navigation }) => {
+  const { email } = route.params; // Get email from previous screen
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleNext = () => {
-    const phoneRegex = /^[0-9]{10}$/; // Validate phone number (10 digits)
+  const handleNext = async () => {
+    const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-    
-    navigation.navigate('EnterVerificationCode');
 
+    try {
+      setLoading(true);
+      const response = await fetch('http://10.0.2.2:3000/api/v1/auth/register-phone', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, phoneNumber }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        navigation.navigate('EnterVerificationCode', { email, phoneNumber });
+      } else {
+        Alert.alert('Error', result.message || 'Failed to send verification code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   const showHint = () => {
@@ -38,18 +58,18 @@ const EnterPhoneNumberScreen = ({ navigation }) => {
           keyboardType="number-pad"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
-          maxLength={10} // Limit input to 10 digits
+          maxLength={10}
         />
         <TouchableOpacity onPress={showHint} style={styles.hintButton}>
           <Text style={styles.hintIcon}>❗</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack}>
+        <TouchableOpacity style={styles.button} onPress={handleBack} disabled={loading}>
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext}>
-          <Text style={styles.buttonText}>Next</Text>
+        <TouchableOpacity style={styles.button} onPress={handleNext} disabled={loading}>
+          {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>Next</Text>}
         </TouchableOpacity>
       </View>
     </View>
@@ -109,6 +129,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     marginHorizontal: 10,
+    alignItems: 'center',
   },
   buttonText: {
     fontSize: 16,
