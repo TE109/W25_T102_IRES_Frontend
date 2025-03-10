@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-//Confrimation screen
-//Nevigation to checkin screen
+//Confirmation screen
+//Navigation to checkin screen
 const ConfirmationScreen = ({ navigation, route }) => {
   const { type } = route.params;
   //Handle button listener when the access code is correct

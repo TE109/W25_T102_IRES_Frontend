@@ -12,15 +12,33 @@ const DeliveryScreen = ({ navigation }) => {
     navigation.navigate('RequestDeliveryCode'); // Navigate to RequestDeliveryCodeScreen to request Access code
   };
 
-  const handleEnter = () => {
-    const phoneRegex = /^[0-9]{10}$/; // phone number validation, 10 digita
+  const handleEnter = async () => {
+    const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-    navigation.navigate('Confirmation', { type: 'delivery' }); //Navigate to confirmation screen // para: 'delivery'
+  
+    try {
+      const response = await fetch('http://10.0.2.2:3000/api/v1/delivery/validate-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phoneNumber }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        Alert.alert('Success', 'Your delivery access is approved.');
+        navigation.navigate('Confirmation', { type: 'delivery' });
+      } else {
+        Alert.alert('Access Denied', result.message || 'Invalid delivery access code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
   };
-
+  
   const handleBack = () => {
 
     navigation.goBack(); // Navigate back to the previous screen

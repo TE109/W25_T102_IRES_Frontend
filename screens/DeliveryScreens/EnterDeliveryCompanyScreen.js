@@ -5,15 +5,31 @@ const EnterDeliveryCompanyScreen = ({ navigation, route }) => {
   const [companyName, setCompanyName] = useState('');
   const { phoneNumber } = route.params; // Retrieve the phone number from the previous screen
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!companyName.trim()) {
-      Alert.alert('Company Name Required', 'Please enter your delivery company name to proceed.');
-      return; //Validate to ensure the input is not empty
+      Alert.alert('Company Name Required', 'Please enter your delivery company name.');
+      return;
     }
   
-    // Navigate to SelectDeliveryCompanyScreen
-    navigation.navigate('SelectDeliveryCompany');
+    try {
+      const response = await fetch('http://10.0.2.2:3000/api/v1/delivery/company', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phoneNumber, companyName }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        navigation.navigate('SelectDeliveryCompany', { phoneNumber, companyName });
+      } else {
+        Alert.alert('Error', result.message || 'Failed to submit company name.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
   };
+  
   const handleBack = () => {
     navigation.goBack(); // Navigate back to the previous screen
   };

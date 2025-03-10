@@ -6,16 +6,32 @@ const RequestDeliveryCodeScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
   //handleNext to validate and navigate for event listener
-  const handleNext = () => {
-    const phoneRegex = /^[0-9]{10}$/; // Validate phone number, similar logic to previous screen
+  const handleNext = async () => {
+    const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
   
-    // Navigate to the company input screen, passing the phone number para
-    navigation.navigate('EnterDeliveryCompany', { phoneNumber });
+    try {
+      const response = await fetch('http://10.0.2.2:3000/api/v1/delivery/request-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phoneNumber }),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        navigation.navigate('EnterDeliveryCompany', { phoneNumber });
+      } else {
+        Alert.alert('Error', result.message || 'Failed to request delivery code.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
   };
+  
   
   const handleBackToMain = () => {
     navigation.navigate('CheckIn'); // Navigate back to the Check in Screen
