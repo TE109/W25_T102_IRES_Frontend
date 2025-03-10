@@ -1,77 +1,55 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
 const EnterPhoneNumberScreen = ({ route, navigation }) => {
-  const { email } = route.params; // Get email from previous screen
+  const { email, password } = route.params || {}; // ✅ Ensure password is retrieved
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleNext = async () => {
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
+    if (!phoneNumber.trim()) {
+      Alert.alert('Error', 'Please enter a valid phone number.');
       return;
     }
 
     try {
-      setLoading(true);
-      const response = await fetch('http://10.0.2.2:3000/api/v1/auth/register-phone', {
+      const response = await fetch('http://10.0.2.2:3000/api/v1/auth/verify-phone', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, phoneNumber }),
+        body: JSON.stringify({ email, password, phoneNumber }),
       });
 
-      const result = await response.json();
+      const textResponse = await response.text(); // Read response as text first
 
-      if (response.ok) {
-        navigation.navigate('EnterVerificationCode', { email, phoneNumber });
-      } else {
-        Alert.alert('Error', result.message || 'Failed to send verification code.');
+      try {
+        const result = JSON.parse(textResponse); // Try to parse JSON
+        if (response.ok) {
+          navigation.navigate('EnterVerificationCode', { email, phoneNumber });
+        } else {
+          Alert.alert('Error', result.message || 'Phone number verification failed.');
+        }
+      } catch (jsonError) {
+        Alert.alert('Error', 'Invalid response from server.');
+        console.error('Server response is not JSON:', textResponse);
       }
     } catch (error) {
       Alert.alert('Error', error.message);
-    } finally {
-      setLoading(false);
+      console.error('Fetch Error:', error);
     }
-  };
-
-  const handleBack = () => {
-    navigation.goBack();
-  };
-
-  const showHint = () => {
-    Alert.alert(
-      'Phone Number Hint',
-      'Please enter your 10-digit phone number with no spaces.',
-      [{ text: 'Okay' }]
-    );
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Enter phone number</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter phone number"
-          keyboardType="number-pad"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          maxLength={10}
-        />
-        <TouchableOpacity onPress={showHint} style={styles.hintButton}>
-          <Text style={styles.hintIcon}>❗</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleBack} disabled={loading}>
-          <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleNext} disabled={loading}>
-          {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>Next</Text>}
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.title}>Enter Your Phone Number</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter phone number"
+        keyboardType="phone-pad"
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+      />
+      <TouchableOpacity style={styles.button} onPress={handleNext}>
+        <Text style={styles.buttonText}>Next</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -85,56 +63,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 40,
+    marginBottom: 20,
     textAlign: 'center',
   },
-  inputContainer: {
-    width: '80%',
-    marginBottom: 20,
-    position: 'relative',
-  },
-  label: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 10,
-  },
   input: {
-    width: '100%',
+    width: '80%',
     height: 50,
     borderWidth: 1,
     borderColor: '#CCC',
     borderRadius: 8,
     paddingHorizontal: 10,
+    marginBottom: 20,
     backgroundColor: '#FFF',
   },
-  hintButton: {
-    position: 'absolute',
-    right: 10,
-    top: 40,
-  },
-  hintIcon: {
-    fontSize: 16,
-    color: '#000',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
-  },
   button: {
-    backgroundColor: '#D3D3D3',
+    backgroundColor: '#007BFF',
     paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
     borderRadius: 8,
-    marginHorizontal: 10,
-    alignItems: 'center',
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center',
   },
 });
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { getToken } from './TokenStorage';
+import { getToken } from '../TokenStorage';
 
 const FinishAccountSetupScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);

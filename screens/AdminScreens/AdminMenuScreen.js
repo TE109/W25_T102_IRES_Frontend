@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { getToken } from './TokenStorage';
+import { getToken } from '../TokenStorage';
 
 const AdminMenuScreen = ({ navigation }) => {
   const [adminName, setAdminName] = useState('');

@@ -9,7 +9,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { getToken } from './TokenStorage'; // Ensure this retrieves JWT token
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddBusinessDetailsScreen = ({ navigation }) => {
   const [businesses, setBusinesses] = useState([]);
@@ -19,24 +19,43 @@ const AddBusinessDetailsScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [loading, setLoading] = useState(true);
 
+  // Function to retrieve JWT token
+  const getToken = async () => {
+    try {
+      return await AsyncStorage.getItem('authToken');
+    } catch (error) {
+      console.error('Error retrieving token:', error);
+      return null;
+    }
+  };
+
   // Fetch businesses from the backend when the screen loads
   useEffect(() => {
     const fetchBusinesses = async () => {
       try {
         const token = await getToken();
+
+        const headers = {
+          'Content-Type': 'application/json',
+        };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch('http://10.0.2.2:3000/api/v1/company', {
           method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          headers,
         });
 
-        const result = await response.json();
-
-        if (response.ok) {
-          setBusinesses(result);
-        } else {
-          Alert.alert('Error', result.message || 'Failed to load businesses.');
+        const textResponse = await response.text();
+        try {
+          const result = JSON.parse(textResponse);
+          if (response.ok) {
+            setBusinesses(result);
+          } 
+        } catch (jsonError) {
+          console.error('Invalid JSON response:', textResponse);
+          Alert.alert('Error', 'Invalid response from the server.');
         }
       } catch (error) {
         Alert.alert('Error', error.message);
@@ -71,22 +90,31 @@ const AddBusinessDetailsScreen = ({ navigation }) => {
     };
 
     try {
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch('http://10.0.2.2:3000/api/v1/company', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers,
         body: JSON.stringify(companyData),
       });
 
-      const result = await response.json();
-
-      if (response.ok) {
-        setBusinesses([...businesses, result]);
-        Alert.alert('Company added successfully!');
-      } else {
-        Alert.alert(`Error: ${result.message || 'Something went wrong'}`);
+      const textResponse = await response.text();
+      try {
+        const result = JSON.parse(textResponse);
+        if (response.ok) {
+          setBusinesses([...businesses, result]);
+          Alert.alert('Success', 'Company added successfully!');
+        } else {
+          Alert.alert('Error', result.message || 'Something went wrong');
+        }
+      } catch (jsonError) {
+        console.error('Invalid JSON response:', textResponse);
+        Alert.alert('Error', 'Invalid response from the server.');
       }
     } catch (error) {
       Alert.alert(`Error: ${error.message}`);
@@ -103,7 +131,7 @@ const AddBusinessDetailsScreen = ({ navigation }) => {
       Alert.alert('No Businesses Added', 'Please add at least one business before proceeding.');
       return;
     }
-    navigation.navigate('BusinessOverview', { businesses });
+    navigation.navigate('BusinessOverviewScreen', { businesses });
   };
 
   return (
@@ -180,6 +208,8 @@ const AddBusinessDetailsScreen = ({ navigation }) => {
     </View>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   container: {

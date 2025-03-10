@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, ActivityIndicator } from 'react-native';
-import { getToken } from './TokenStorage';
+import { getToken } from '../TokenStorage';
 
 const BusinessOverviewScreen = ({ navigation }) => {
   const [businesses, setBusinesses] = useState([]);

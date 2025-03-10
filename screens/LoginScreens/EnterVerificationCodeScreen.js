@@ -1,37 +1,47 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EnterVerificationCodeScreen = ({ route, navigation }) => {
-  const { email, phoneNumber } = route.params; // Get email & phone from previous screen
+  const { email, password, phoneNumber } = route.params;
   const [verificationCode, setVerificationCode] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleNext = async () => {
-    const codeRegex = /^[0-9]{6}$/;
-    if (!codeRegex.test(verificationCode)) {
-      Alert.alert('Invalid Code', 'Please enter a valid 6-digit verification code.');
+    if (!verificationCode.trim()) {
+      Alert.alert('Error', 'Please enter a valid 6-digit verification code.');
       return;
     }
 
     try {
-      setLoading(true);
       const response = await fetch('http://10.0.2.2:3000/api/v1/auth/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, phoneNumber, code: verificationCode }),
       });
 
-      const result = await response.json();
+      const textResponse = await response.text();
 
-      if (response.ok) {
-        navigation.navigate('AddBusinessDetails', { email, phoneNumber });
-      } else {
-        Alert.alert('Error', result.message || 'Invalid verification code.');
+      try {
+        const result = JSON.parse(textResponse);
+        if (response.ok) {
+          // ✅ Store JWT Token if provided
+          if (result.token) {
+            await AsyncStorage.setItem('authToken', result.token);
+          }
+
+          // ✅ Navigate directly to AddBusinessDetailsScreen
+          navigation.navigate('AddBusinessDetails', { email, phoneNumber });
+        } else {
+          Alert.alert('Error', result.message || 'Verification failed.');
+        }
+      } catch (jsonError) {
+        Alert.alert('Error', 'Invalid response from server.');
+        console.error('Server response is not JSON:', textResponse);
       }
     } catch (error) {
       Alert.alert('Error', error.message);
-    } finally {
-      setLoading(false);
+      console.error('Fetch Error:', error);
     }
   };
 
@@ -50,10 +60,12 @@ const EnterVerificationCodeScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create an Account</Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>
-          Please enter the verification code that was sent to your phone to proceed
-        </Text>
+      <Text style={styles.label}>
+        Please enter the verification code that was sent to your phone to proceed
+      </Text>
+
+      {/* Input Field & Hint Button in One Row */}
+      <View style={styles.inputRow}>
         <TextInput
           style={styles.input}
           placeholder="Enter verification code"
@@ -63,9 +75,10 @@ const EnterVerificationCodeScreen = ({ route, navigation }) => {
           maxLength={6}
         />
         <TouchableOpacity onPress={showHint} style={styles.hintButton}>
-          <Text style={styles.hintIcon}>❗</Text>
+          <Text style={styles.hintIcon}>i</Text>
         </TouchableOpacity>
       </View>
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleBack} disabled={loading}>
           <Text style={styles.buttonText}>Back</Text>
@@ -89,13 +102,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 40,
-    textAlign: 'center',
-  },
-  inputContainer: {
-    width: '80%',
     marginBottom: 20,
-    position: 'relative',
+    textAlign: 'center',
   },
   label: {
     fontSize: 16,
@@ -103,22 +111,27 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   },
-  input: {
-    width: '100%',
-    height: 50,
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#CCC',
     borderRadius: 8,
-    paddingHorizontal: 10,
     backgroundColor: '#FFF',
+    width: '80%',
+    paddingHorizontal: 10,
+    height: 50,
+    marginBottom: 20,
+  },
+  input: {
+    flex: 1,  // Makes input take all available space
+    height: '100%',
   },
   hintButton: {
-    position: 'absolute',
-    right: 10,
-    top: 40,
+    marginLeft: 10,  // Adds spacing from input
   },
   hintIcon: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#000',
   },
   buttonContainer: {

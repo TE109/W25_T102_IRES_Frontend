@@ -6,33 +6,32 @@ const CreateAccountScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const handleNext = async () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Alert.alert('Invalid Email', 'Please enter a valid email address.');
-      return;
-    }
-
     try {
-      setLoading(true);
       const response = await fetch('http://10.0.2.2:3000/api/v1/auth/check-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        navigation.navigate('CreatePassword', { email });
-      } else {
-        Alert.alert('Error', result.message || 'This email is already registered.');
+  
+      const textResponse = await response.text(); // Read response as text first
+  
+      try {
+        const result = JSON.parse(textResponse); // Try to parse JSON
+        if (response.ok) {
+          navigation.navigate('CreatePassword', { email });
+        } else {
+          Alert.alert('Error', result.message || 'This email is already registered.');
+        }
+      } catch (jsonError) {
+        Alert.alert('Error', 'Invalid response from server.');
+        console.error('Server response is not JSON:', textResponse);
       }
     } catch (error) {
       Alert.alert('Error', error.message);
-    } finally {
-      setLoading(false);
+      console.error('Fetch Error:', error);
     }
   };
+  
 
   const handleBack = () => {
     navigation.goBack();

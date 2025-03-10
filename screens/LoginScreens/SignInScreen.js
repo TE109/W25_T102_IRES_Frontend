@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import { storeToken } from './TokenStorage';
+import { storeToken } from '../TokenStorage';
 
 const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -52,6 +52,8 @@ const SignInScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign In</Text>
+
+      {/* Email Input */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -60,18 +62,20 @@ const SignInScreen = ({ navigation }) => {
           value={email}
           onChangeText={setEmail}
         />
-        <View style={styles.passwordContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry={!passwordVisible}
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
-            <Text style={styles.togglePassword}>{passwordVisible ? '👁️' : '🙈'}</Text>
-          </TouchableOpacity>
-        </View>
+      </View>
+
+      {/* Password Input with Visibility Toggle */}
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry={!passwordVisible}
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)} style={styles.togglePassword}>
+          <Text style={styles.toggleText}>{passwordVisible ? 'Hide' : 'Show'}</Text>
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
@@ -105,27 +109,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputContainer: {
-    width: '80%',
-    marginBottom: 20,
-  },
-  passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    position: 'relative',
-  },
-  input: {
-    flex: 1,
-    height: 50,
+    width: '80%',
+    backgroundColor: '#FFF',
     borderWidth: 1,
     borderColor: '#CCC',
     borderRadius: 8,
     paddingHorizontal: 10,
-    backgroundColor: '#FFF',
+    marginBottom: 15,
+  },
+  input: {
+    flex: 1,
+    height: 50,
   },
   togglePassword: {
-    fontSize: 18,
-    marginLeft: 10,
-    color: '#007BFF',
+    padding: 10,
+  },
+  toggleText: {
+    fontSize: 16,
   },
   resetButton: {
     marginTop: 10,
@@ -140,6 +142,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '80%',
+    marginTop: 20,
   },
   button: {
     backgroundColor: '#D3D3D3',

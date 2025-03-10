@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { getToken } from './TokenStorage';
+import { getToken } from '../TokenStorage';
 
 const EditBusinessScreen = ({ route, navigation }) => {
   const { business } = route.params;

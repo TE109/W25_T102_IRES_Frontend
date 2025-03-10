@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { getToken } from './TokenStorage'; // Ensure this function retrieves JWT token
+import { getToken } from '../TokenStorage'; // Ensure this function retrieves JWT token
 
 const AccountInfoScreen = ({ navigation }) => {
   const [userEmail, setUserEmail] = useState('');
