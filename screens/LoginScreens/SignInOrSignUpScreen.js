@@ -11,7 +11,7 @@ const SignInOrSignUpScreen = ({ navigation }) => {
   };
 
   const handleBack = () => {
-    navigation.goBack(); // Navigate back to the previous screen
+    navigation.goBack();
   };
 
   return (
@@ -21,13 +21,15 @@ const SignInOrSignUpScreen = ({ navigation }) => {
         <Text style={styles.backButtonText}>← Back</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>Choose one of the options</Text>
+      <Text style={styles.title}>Choose an Option</Text>
+      <Text style={styles.subtitle}>Sign in to your existing account or create a new one.</Text>
+
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleSignIn}>
-          <Text style={styles.buttonText}>Sign in</Text>
+        <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
+          <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-          <Text style={styles.buttonText}>Create an account</Text>
+        <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
+          <Text style={styles.buttonText}>Create Account</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -59,25 +61,41 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: 'center',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
+  subtitle: {
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 30,
   },
-  button: {
-    backgroundColor: '#D3D3D3',
+  buttonContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+  },
+  signInButton: {
+    backgroundColor: '#007BFF',
     paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
     borderRadius: 8,
-    marginHorizontal: 10,
+    marginBottom: 15,
+    width: '80%',
+    alignItems: 'center',
+  },
+  signUpButton: {
+    backgroundColor: '#28A745',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    width: '80%',
+    alignItems: 'center',
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFF',
   },
 });
 
