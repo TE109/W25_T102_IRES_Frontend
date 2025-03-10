@@ -1,19 +1,41 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, ActivityIndicator } from 'react-native';
+import { getToken } from './TokenStorage';
 
-const EditBusinessOverview = ({ navigation, route }) => {
-  const [businesses, setBusinesses] = useState(route.params?.businesses || []);
+const EditBusinessOverview = ({ navigation }) => {
+  const [businesses, setBusinesses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleAddMore = () => {
-    navigation.navigate('AddMoreBusiness', { existingBusinesses: businesses });
-  };
+  // Fetch businesses from the backend when the screen loads
+  useEffect(() => {
+    const fetchBusinesses = async () => {
+      try {
+        const token = await getToken();
+        const response = await fetch('http://10.0.2.2:3000/api/v1/company', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
 
-  const handleEdit = (index) => {
-    const businessToEdit = businesses[index];
-    navigation.navigate('EditBusinessScreen', { business: businessToEdit, updateBusiness: updateBusiness });
-  };
+        const result = await response.json();
 
-  const handleDelete = (index) => {
+        if (response.ok) {
+          setBusinesses(result);
+        } else {
+          Alert.alert('Error', result.message || 'Failed to load businesses.');
+        }
+      } catch (error) {
+        Alert.alert('Error', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBusinesses();
+  }, []);
+
+  const handleDelete = async (id) => {
     Alert.alert(
       'Delete Business',
       'Are you sure you want to delete this business?',
@@ -22,36 +44,53 @@ const EditBusinessOverview = ({ navigation, route }) => {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => {
-            const updatedBusinesses = [...businesses];
-            updatedBusinesses.splice(index, 1);
-            setBusinesses(updatedBusinesses);
+          onPress: async () => {
+            try {
+              const token = await getToken();
+              const response = await fetch(`http://10.0.2.2:3000/api/v1/company/${id}`, {
+                method: 'DELETE',
+                headers: {
+                  'Authorization': `Bearer ${token}`
+                }
+              });
+
+              if (response.ok) {
+                setBusinesses(businesses.filter((business) => business._id !== id));
+                Alert.alert('Success', 'Business deleted successfully.');
+              } else {
+                const result = await response.json();
+                Alert.alert('Error', result.message || 'Failed to delete business.');
+              }
+            } catch (error) {
+              Alert.alert('Error', error.message);
+            }
           },
         },
       ]
     );
   };
 
-  const updateBusiness = (updatedBusiness) => {
-    const updatedBusinesses = businesses.map((business) =>
-      business.id === updatedBusiness.id ? updatedBusiness : business
-    );
-    setBusinesses(updatedBusinesses);
+  const handleEdit = (business) => {
+    navigation.navigate('EditBusinessScreen', { business });
   };
 
-  const renderBusinessItem = ({ item, index }) => (
+  const handleAddMore = () => {
+    navigation.navigate('AddMoreBusiness');
+  };
+
+  const renderBusinessItem = ({ item }) => (
     <View style={styles.businessCard}>
-      <Text style={styles.businessName}>{item.name}</Text>
+      <Text style={styles.businessName}>{item.companyName}</Text>
       <Text style={styles.businessDetails}>
-        {item.floor ? `On the ${item.floor} floor.` : ''}
-        {item.room ? ` Room number ${item.room}.` : ''}
+        {item.companyFloor ? `On the ${item.companyFloor} floor.` : ''}
+        {item.companyRoom ? ` Room number ${item.companyRoom}.` : ''}
       </Text>
-      <Text style={styles.businessPhone}>{item.phone}</Text>
+      <Text style={styles.businessPhone}>{item.companyPhone}</Text>
       <View style={styles.cardButtonContainer}>
-        <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(index)}>
+        <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item)}>
           <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(index)}>
+        <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item._id)}>
           <Text style={styles.deleteButtonText}>Delete</Text>
         </TouchableOpacity>
       </View>
@@ -60,27 +99,31 @@ const EditBusinessOverview = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
-      <Text style={styles.subtitle}>
-        Review the information for each business or company. Click the 'Edit' button to add or update details. To remove a business or company, click the 'Delete' button.
-      </Text>
-      <FlatList
-        data={businesses}
-        renderItem={renderBusinessItem}
-        keyExtractor={(item, index) => index.toString()}
-        style={styles.list}
-      />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-          <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleAddMore}>
-          <Text style={styles.buttonText}>Add More Companies/Businesses</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AdminMenuScreen')}>
-          <Text style={styles.buttonText}>Finish</Text>
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.title}>Edit Business Overview</Text>
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <>
+          <Text style={styles.subtitle}>
+            Review the information for each business or company. Click the 'Edit' button to update details or the 'Delete' button to remove a business.
+          </Text>
+          <FlatList
+            data={businesses}
+            renderItem={renderBusinessItem}
+            keyExtractor={(item) => item._id}
+            style={styles.list}
+          />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleAddMore}>
+              <Text style={styles.buttonText}>Add More Businesses</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AdminMenuScreen')}>
+              <Text style={styles.buttonText}>Finish</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
     </View>
   );
 };
