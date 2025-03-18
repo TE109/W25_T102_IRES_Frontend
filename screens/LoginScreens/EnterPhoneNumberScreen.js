@@ -1,17 +1,50 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import {storeToken} from '../TokenStorage';
 
-const EnterPhoneNumberScreen = ({ navigation }) => {
+const EnterPhoneNumberScreen = ({ route, navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
-
-  const handleNext = () => {
+  const { email, password } = route.params;
+  const handleNext = async() => {
     const phoneRegex = /^[0-9]{10}$/; // Validate phone number (10 digits)
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
+    console.log({email}, {password}, {phoneNumber})
+    navigation.navigate('AdminMenuScreen');
+
+    try{
+          const response = await fetch('http://10.0.2.2:3000/api/v1/admin/signup',{
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email,
+              password,
+              phoneNumber
+            }),
+          });
+          const data = await response.json();
     
-    navigation.navigate('EnterVerificationCode');
+          if(response.ok){
+            const token = data.token;
+    
+            await storeToken(token);
+    
+            Alert.alert('Success', 'You are signed in!', [
+              { text: 'OK', onPress: () => navigation.navigate('AdminMenuScreen') },
+            ]);
+            
+          }else{
+            Alert.alert(data.message || 'Login failed');
+          }
+    
+        }catch (error){
+          console.log(error);
+          Alert.alert('Exception',error.message);
+        }
 
   };
 

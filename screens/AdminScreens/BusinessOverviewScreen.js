@@ -43,8 +43,8 @@ const BusinessOverviewScreen = ({ navigation, route }) => {
     <View style={styles.businessCard}>
       <Text style={styles.businessName}>{item.name}</Text>
       <Text style={styles.businessDetails}>
-        {item.floor ? `On the ${item.floor} floor.` : ''}
-        {item.room ? ` Room number ${item.room}.` : ''}
+        {item.floor ? `Floor ${item.floor}.` : ''}
+        {item.room ? ` Room ${item.room}.` : ''}
       </Text>
       <Text style={styles.businessPhone}>{item.phone}</Text>
       <View style={styles.cardButtonContainer}>
@@ -60,7 +60,7 @@ const BusinessOverviewScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
+      <Text style={styles.title}>Business Overview</Text>
       <Text style={styles.subtitle}>
         Review the information for each business or company. Click the 'Edit' button to add or update details. To remove a business or company, click the 'Delete' button.
       </Text>

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Modal } from 'react-native';
 
-const CreatePasswordScreen = ({ navigation }) => {
+const CreatePasswordScreen = ({ route, navigation }) => {
   const [password, setPassword] = useState('');
   const [hintVisible, setHintVisible] = useState(false);
-
+  const { email } = route.params;
   const handleNext = () => {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/; // Password must be 8–12 characters with letters and numbers
     if (!passwordRegex.test(password)) {
@@ -12,7 +12,7 @@ const CreatePasswordScreen = ({ navigation }) => {
       return;
     }
     // Navigate to the next screen, passing the password
-    navigation.navigate('EnterPhoneNumber');
+    navigation.navigate('EnterPhoneNumber', {email, password});
   };
 
   const handleBack = () => {

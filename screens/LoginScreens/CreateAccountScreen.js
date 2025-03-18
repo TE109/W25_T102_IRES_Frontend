@@ -11,7 +11,7 @@ const CreateAccountScreen = ({ navigation }) => {
       return;
     }
     // Navigate to the next screen, passing the email
-    navigation.navigate('CreatePassword');
+    navigation.navigate('CreatePassword', {email});
   };
 
   const handleBack = () => {
