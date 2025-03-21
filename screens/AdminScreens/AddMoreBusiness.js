@@ -12,6 +12,7 @@ import {
 
 const AddMoreBusiness = ({ navigation }) => {
   const [businesses, setBusinesses] = useState([]);
+  const [businessId, setBusinessId] = useState(''); 
   const [businessName, setBusinessName] = useState('');
   const [floorNumber, setFloorNumber] = useState('');
   const [roomNumber, setRoomNumber] = useState('');
@@ -32,7 +33,7 @@ const AddMoreBusiness = ({ navigation }) => {
     }
 
     const companyData ={
-      
+      newCompany_id: businessId,
       companyName: businessName,
       companyFloor: floorNumber,
       companyRoom: roomNumber,
@@ -64,7 +65,7 @@ const AddMoreBusiness = ({ navigation }) => {
       }
   
     const newBusiness = {
-      id: Date.now().toString(),
+      id: businessId,
       name: businessName,
       floor: floorNumber || 'N/A',
       room: roomNumber || 'N/A',
@@ -72,6 +73,7 @@ const AddMoreBusiness = ({ navigation }) => {
     };
 
     setBusinesses([...businesses, newBusiness]);
+    setBusinessId('');
     setBusinessName('');
     setFloorNumber('');
     setRoomNumber('');

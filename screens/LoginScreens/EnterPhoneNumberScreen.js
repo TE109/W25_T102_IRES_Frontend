@@ -33,12 +33,12 @@ const EnterPhoneNumberScreen = ({ route, navigation }) => {
     
             await storeToken(token);
     
-            Alert.alert('Success', 'You are signed in!', [
+            Alert.alert('Success', 'Account created!', [
               { text: 'OK', onPress: () => navigation.navigate('AdminMenuScreen') },
             ]);
             
           }else{
-            Alert.alert(data.message || 'Login failed');
+            Alert.alert(data.message || 'Account creation failed');
           }
     
         }catch (error){

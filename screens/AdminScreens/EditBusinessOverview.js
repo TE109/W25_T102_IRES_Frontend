@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
-
+import {getToken} from '../TokenStorage';
+var mongoose = require('mongoose');
 const EditBusinessOverview = ({ navigation, route }) => {
   const [businesses, setBusinesses] = useState(route.params?.businesses || []);
 
@@ -10,7 +11,16 @@ const EditBusinessOverview = ({ navigation, route }) => {
 
   const handleEdit = (index) => {
     const businessToEdit = businesses[index];
-    navigation.navigate('EditBusinessScreen', { business: businessToEdit, updateBusiness: updateBusiness });
+    if (!businessToEdit) {
+      console.error('Error: businessToEdit is undefined');
+      return;
+    }
+    console.log(businessToEdit)
+    //console.log('Navigating with:', businessToEdit);
+    navigation.navigate('EditBusinessScreen', { 
+      business: businessToEdit, 
+      updateBusiness 
+    });
   };
 
   const handleDelete = (index) => {
@@ -32,18 +42,19 @@ const EditBusinessOverview = ({ navigation, route }) => {
     );
   };
 
-  const updateBusiness = (updatedBusiness) => {
+  const updateBusiness = async (updatedBusiness) => {
     const updatedBusinesses = businesses.map((business) =>
       business.id === updatedBusiness.id ? updatedBusiness : business
     );
     setBusinesses(updatedBusinesses);
+    
   };
 
   const renderBusinessItem = ({ item, index }) => (
     <View style={styles.businessCard}>
       <Text style={styles.businessName}>{item.name}</Text>
       <Text style={styles.businessDetails}>
-        {item.floor ? `On the ${item.floor} floor.` : ''}
+        {item.floor ? `Floor ${item.floor}.` : ''}
         {item.room ? ` Room number ${item.room}.` : ''}
       </Text>
       <Text style={styles.businessPhone}>{item.phone}</Text>
@@ -60,7 +71,7 @@ const EditBusinessOverview = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
+      <Text style={styles.title}>Businesses</Text>
       <Text style={styles.subtitle}>
         Review the information for each business or company. Click the 'Edit' button to add or update details. To remove a business or company, click the 'Delete' button.
       </Text>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {getToken} from '../TokenStorage';
 import {
   View,
   Text,
@@ -10,15 +11,15 @@ import {
 
 const EditBusinessScreen = ({ route, navigation }) => {
   const { business, updateBusiness } = route.params;
-
+  const [businessID, setBusinessID] = useState(business?._id || ''); 
   const [businessName, setBusinessName] = useState(business?.name || '');
   const [floorNumber, setFloorNumber] = useState(business?.floor || '');
   const [roomNumber, setRoomNumber] = useState(business?.room || '');
   const [phoneNumber, setPhoneNumber] = useState(business?.phone || '');
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const phoneRegex = /^[0-9]{10}$/;
-
+    const token = await getToken();
     if (!businessName.trim() || !phoneNumber.trim()) {
       Alert.alert('Missing Information', 'Business name and phone number are required.');
       return;
@@ -28,6 +29,40 @@ const EditBusinessScreen = ({ route, navigation }) => {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
+
+    const companyData ={
+      
+      companyName: businessName,
+      companyFloor: floorNumber,
+      companyRoom: roomNumber,
+      companyPhone: phoneNumber
+  
+    };
+
+    try{
+                const response = await fetch(`http://10.0.2.2:3000/api/v1/company/${business.id}`,{
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                  },
+                  body:JSON.stringify(companyData),
+          
+                });
+                
+                const result = await response.json();
+          
+                if(response.ok){
+                  Alert.alert('Company updated successfully!');
+          
+                }else{
+                  Alert.alert(`Error: ${result.message || 'something went wrong'}`);
+                }
+              }catch (error){
+                Alert.alert(`Error: ${error.message}`);
+              }
+          
+            
 
     const updatedBusiness = {
       ...business,
