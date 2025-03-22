@@ -11,7 +11,7 @@ import {
 
 const EditBusinessScreen = ({ route, navigation }) => {
   const { business, updateBusiness } = route.params;
-  const [businessID, setBusinessID] = useState(business?._id || ''); 
+  const [businessID, setBusinessID] = useState(business?.id || ''); 
   const [businessName, setBusinessName] = useState(business?.name || '');
   const [floorNumber, setFloorNumber] = useState(business?.floor || '');
   const [roomNumber, setRoomNumber] = useState(business?.room || '');
@@ -31,7 +31,6 @@ const EditBusinessScreen = ({ route, navigation }) => {
     }
 
     const companyData ={
-      
       companyName: businessName,
       companyFloor: floorNumber,
       companyRoom: roomNumber,
@@ -40,6 +39,7 @@ const EditBusinessScreen = ({ route, navigation }) => {
     };
 
     try{
+      console.log(`edit ${business.id}`)
                 const response = await fetch(`http://10.0.2.2:3000/api/v1/company/${business.id}`,{
                   method: 'PUT',
                   headers: {

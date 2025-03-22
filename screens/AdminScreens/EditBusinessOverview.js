@@ -41,11 +41,12 @@ const EditBusinessOverview = ({ navigation, route }) => {
       ]
     );
   };
-
+  
   const updateBusiness = async (updatedBusiness) => {
     const updatedBusinesses = businesses.map((business) =>
       business.id === updatedBusiness.id ? updatedBusiness : business
     );
+    //console.log(`updateBusiness ${business.id}`)
     setBusinesses(updatedBusinesses);
     
   };
