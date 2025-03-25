@@ -37,7 +37,7 @@ const EditBusinessOverview = ({ navigation, route }) => {
           style: 'destructive',
           onPress: async () => {
             try {
-              const response = await fetch(`http://10.0.2.2:3000/api/v1/company/${business.id}`, {
+              const response = await fetch(`http://10.0.2.2:3000/api/v1/company/${business._id}`, {
                 method: 'DELETE',
                 headers: {
                   'Authorization': `Bearer ${token}`,
@@ -66,14 +66,14 @@ const EditBusinessOverview = ({ navigation, route }) => {
   
   const updateBusiness = async (updatedBusiness) => {
     const updatedBusinesses = businesses.map((business) =>
-      business.id === updatedBusiness.id ? updatedBusiness : business
+      business._id === updatedBusiness._id ? updatedBusiness : business
     );
     //console.log(`updateBusiness ${business.id}`)
     setBusinesses(updatedBusinesses);
     
   };
 
- /*  useEffect(() =>{
+  useEffect(() =>{
     const fetchBusinesses = async () => {
       try {
         const token = await getToken();
@@ -86,9 +86,10 @@ const EditBusinessOverview = ({ navigation, route }) => {
         });
 
         const data = await response.json();
+        //console.log(data.data)
 
         if (response.ok) {
-          setBusinesses(data);
+          setBusinesses(data.data);
         }else{
           Alert.alert('Error', data.message || 'Failed to load businesses');
         }
@@ -99,16 +100,16 @@ const EditBusinessOverview = ({ navigation, route }) => {
     };
 
     fetchBusinesses();
-  }, []); */
+  }, []);
 
   const renderBusinessItem = ({ item, index }) => (
     <View style={styles.businessCard}>
-      <Text style={styles.businessName}>{item.name}</Text>
+      <Text style={styles.businessName}>{item.companyName}</Text>
       <Text style={styles.businessDetails}>
-        {item.floor ? `Floor ${item.floor}.` : ''}
-        {item.room ? ` Room number ${item.room}.` : ''}
+        {item.companyFloor ? `Floor ${item.companyFloor}.` : ''}
+        {item.companyRoom ? ` Room number ${item.companyRoom}.` : ''}
       </Text>
-      <Text style={styles.businessPhone}>{item.phone}</Text>
+      <Text style={styles.businessPhone}>{item.companyPhone}</Text>
       <View style={styles.cardButtonContainer}>
         <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(index)}>
           <Text style={styles.editButtonText}>Edit</Text>

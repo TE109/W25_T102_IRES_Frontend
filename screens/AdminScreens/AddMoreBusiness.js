@@ -54,7 +54,7 @@ const AddMoreBusiness = ({ navigation }) => {
         
         const result = await response.json();
         companyId = result._id
-        console.log(`add ${result._id}`)
+        //console.log(`add ${result._id}`)
       
   
         if(response.ok){
@@ -75,11 +75,13 @@ const AddMoreBusiness = ({ navigation }) => {
       phone: phoneNumber,
     };
 
-    console.log(`add2 ${newBusiness.id}`)
+    //console.log(`add2 ${newBusiness.id}`)
   
    
 
     setBusinesses([...businesses, newBusiness]);
+    console.log(businesses)
+    console.log(newBusiness)
     setBusinessId('');
     setBusinessName('');
     setFloorNumber('');
