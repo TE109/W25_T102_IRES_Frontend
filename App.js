@@ -27,7 +27,7 @@ import CreatePasswordScreen from './screens/LoginScreens/CreatePasswordScreen';
 import EnterPhoneNumberScreen from './screens/LoginScreens/EnterPhoneNumberScreen';
 import EnterVerificationCodeScreen from './screens/LoginScreens/EnterVerificationCodeScreen';
 import AddBusinessDetailsScreen from './screens/AdminScreens/AddBusinessDetailsScreen';
-import BusinessOverviewScreen from './screens/AdminScreens/BusinessOverviewScreen';
+//import BusinessOverviewScreen from './screens/AdminScreens/BusinessOverviewScreen';
 import EditBusinessScreen from './screens/AdminScreens/EditBusinessScreen';
 import FinishAccountSetupScreen from './screens/AdminScreens/FinishAccountSetupScreen';
 import AdminMenuScreen from './screens/AdminScreens/AdminMenuScreen';
@@ -73,7 +73,6 @@ export default function App() {
         <Stack.Screen name="EnterPhoneNumber" component={EnterPhoneNumberScreen} />
         <Stack.Screen name="EnterVerificationCode" component={EnterVerificationCodeScreen}/>
         <Stack.Screen name="AddBusinessDetails" component={AddBusinessDetailsScreen} />
-        <Stack.Screen name="BusinessOverview" component={BusinessOverviewScreen} />
         <Stack.Screen name="EditBusinessScreen" component={EditBusinessScreen}/>
         <Stack.Screen name="FinishAccountSetup" component={FinishAccountSetupScreen} />
         <Stack.Screen name="AdminMenuScreen" component={AdminMenuScreen} />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
 import {getToken} from '../TokenStorage';
 var mongoose = require('mongoose');
@@ -23,7 +23,10 @@ const EditBusinessOverview = ({ navigation, route }) => {
     });
   };
 
-  const handleDelete = (index) => {
+  const handleDelete = async (index) => {
+    const business = businesses[index];
+    const token = await getToken();
+  
     Alert.alert(
       'Delete Business',
       'Are you sure you want to delete this business?',
@@ -32,15 +35,34 @@ const EditBusinessOverview = ({ navigation, route }) => {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => {
-            const updatedBusinesses = [...businesses];
-            updatedBusinesses.splice(index, 1);
-            setBusinesses(updatedBusinesses);
+          onPress: async () => {
+            try {
+              const response = await fetch(`http://10.0.2.2:3000/api/v1/company/${business.id}`, {
+                method: 'DELETE',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                },
+              });
+  
+              const result = await response.json();
+  
+              if (response.ok) {
+                const updatedBusinesses = [...businesses];
+                updatedBusinesses.splice(index, 1);
+                setBusinesses(updatedBusinesses);
+                Alert.alert('Business deleted successfully!');
+              } else {
+                Alert.alert(`Error: ${result.message || 'Something went wrong'}`);
+              }
+            } catch (error) {
+              Alert.alert(`Error: ${error.message}`);
+            }
           },
         },
       ]
     );
   };
+  
   
   const updateBusiness = async (updatedBusiness) => {
     const updatedBusinesses = businesses.map((business) =>
@@ -50,6 +72,34 @@ const EditBusinessOverview = ({ navigation, route }) => {
     setBusinesses(updatedBusinesses);
     
   };
+
+ /*  useEffect(() =>{
+    const fetchBusinesses = async () => {
+      try {
+        const token = await getToken();
+
+        const response = await fetch('http://10.0.2.2:3000/api/v1/company', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setBusinesses(data);
+        }else{
+          Alert.alert('Error', data.message || 'Failed to load businesses');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        Alert.alert('Error', error.message || 'Something went wrong.');
+      }
+    };
+
+    fetchBusinesses();
+  }, []); */
 
   const renderBusinessItem = ({ item, index }) => (
     <View style={styles.businessCard}>
@@ -79,7 +129,7 @@ const EditBusinessOverview = ({ navigation, route }) => {
       <FlatList
         data={businesses}
         renderItem={renderBusinessItem}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id || item._id || item.name}
         style={styles.list}
       />
       <View style={styles.buttonContainer}>
