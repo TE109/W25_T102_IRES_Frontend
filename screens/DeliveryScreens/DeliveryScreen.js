@@ -13,7 +13,7 @@ const DeliveryScreen = ({ navigation }) => {
   };
 
   const handleEnter = () => {
-    const phoneRegex = /^[0-9]{10}$/; // phone number validation, 10 digita
+    const phoneRegex = /^[0-9]{6}$/; // phone number validation, 10 digita
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
@@ -34,7 +34,7 @@ const DeliveryScreen = ({ navigation }) => {
       </Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter phone number"
+        placeholder="Enter access code"
         keyboardType="number-pad"
         value={phoneNumber}
         onChangeText={setPhoneNumber}

@@ -10,9 +10,9 @@ const VisitorInScreen = ({ navigation }) => {
   };
 
   const handleEnter = () => {
-    const phoneRegex = /^[0-9]{10}$/;
+    const phoneRegex = /^[0-9]{6}$/;
     if (!phoneRegex.test(phoneNumber)) {
-      Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
+      Alert.alert('Invalid Phone Number', 'Please enter a valid 6-digit access.');
       return;
     }
     navigation.navigate('Confirmation', { type: 'visitor' });
@@ -30,7 +30,7 @@ const VisitorInScreen = ({ navigation }) => {
       </Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter phone number"
+        placeholder="Enter access code"
         keyboardType="number-pad"
         value={phoneNumber}
         onChangeText={setPhoneNumber}
