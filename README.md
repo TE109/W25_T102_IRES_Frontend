@@ -31,18 +31,18 @@ Waiting for Approval Visitor
 
 
 ## Getting Started
-Prerequisites
-Ensure you have the following installed:
+Prerequisites <br/>
+Ensure you have the following installed: <br/>
 
-Node.js (v14 or higher)
-npm (comes with Node.js)
+Node.js (v14 or higher) <br/>
+npm (comes with Node.js) <br/>
 
-Install dependencies:
-npm install
-npm install expo
+Install dependencies: <br/>
+npm install <br/>
+npm install expo <br/>
 
-Running the Application
+Running the Application <br/>
 
-While the IRES backend is running:
-npx expo start
+While the IRES backend is running: <br/>
+npx expo start <br/>
 Press a for Android if you are using an Android emulator
