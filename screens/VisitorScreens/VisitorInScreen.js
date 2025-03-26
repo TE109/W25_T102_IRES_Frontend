@@ -9,13 +9,33 @@ const VisitorInScreen = ({ navigation }) => {
     navigation.navigate('RequestVisitorCode');
   };
 
-  const handleEnter = () => {
-    const phoneRegex = /^[0-9]{6}$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      Alert.alert('Invalid Phone Number', 'Please enter a valid 6-digit access.');
-      return;
+  const handleEnter = async(req, res) => {
+    
+
+
+    try{
+      console.log(JSON.stringify({accessCode: phoneNumber}))
+      const response = await fetch('http://10.0.2.2:3000/api/v1/sms/verify',{
+        method: "POST",
+        body: JSON.stringify({accessCode: phoneNumber})});
+
+        const result = await response.json()
+        console.log(result)
+      
+      if (result.ok){
+        navigation.navigate('Confirmation', { type: 'visitor' });
+      }
+      else{
+        Alert.alert('Invalid Access Code', 'Please enter a valid access code.');
+        return;
+
+      }
+      }
+    
+    catch(error){
+      Alert.alert(`Error: ${error.message}`);
     }
-    navigation.navigate('Confirmation', { type: 'visitor' });
+    //navigation.navigate('Confirmation', { type: 'visitor' });
   };
 
   const handleBack = () => {
@@ -34,7 +54,7 @@ const VisitorInScreen = ({ navigation }) => {
         keyboardType="number-pad"
         value={phoneNumber}
         onChangeText={setPhoneNumber}
-        maxLength={10}
+        
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleBack}>
