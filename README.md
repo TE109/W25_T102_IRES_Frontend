@@ -42,5 +42,7 @@ npm install
 npm install expo
 
 Running the Application
+
+While the IRES backend is running:
 npx expo start
 Press a for Android if you are using an Android emulator
