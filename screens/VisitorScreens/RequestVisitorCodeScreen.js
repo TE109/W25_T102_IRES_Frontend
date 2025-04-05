@@ -5,18 +5,26 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 //Similar Logic to Request Delivery Code
 //Use useState to handle inputs for vistor Info
 const RequestVisitorCodeScreen = ({ navigation }) => {
-  const [fullName, setFullName] = useState('');
+  const [to, setTo] = useState('');
 
   //handleNext function, validate input to prevent empty input and navigate
-  const handleNext = () => {
-    if (!fullName.trim()) {
-      Alert.alert('Full Name Required', 'Please enter your full name to proceed.');
-      return;
+  const handleNext = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/v1/sms/send-message`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({
+          body: "Hello, it's Tomer", 
+          to: "4167025141",  
+        }),
+      });
+    } catch (error) {
+      alert(`Error: ${error.message}`);
     }
-
-    // Navigate to the phone input screen, passing the full name as a parameter
-    navigation.navigate('RequestVisitorPhone', { fullName });
   };
+  
 
   //handleBack function navigate to previous
   const handleBack = () => {
@@ -31,8 +39,8 @@ const RequestVisitorCodeScreen = ({ navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Enter your full name"
-          value={fullName}
-          onChangeText={setFullName}
+          value={to}
+          onChangeText={setTo}
         />
       </View>
       <View style={styles.buttonContainer}>
