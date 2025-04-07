@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const WaitingForApprovalVisitorScreen = ({ navigation }) => {
+const WaitingForApprovalVisitorScreen =({ navigation, route }) => {
   const handleGoToMain = () => {
     navigation.navigate('CheckIn'); // Navigate to the main screen
   };
+
+  
 
   return (
     <View style={styles.container}>

@@ -18,13 +18,13 @@ const RequestVisitorPhoneScreen = ({ navigation, route }) => {
     
 
     // Simulate sending access code request
-    Alert.alert(
+    /* Alert.alert(
       'Access Code Requested',
       `An access code has been sent to the phone number: ${phoneNumber} for ${fullName}.`
-    );
+    ); */
 
     // Navigate back to visitor reason
-    navigation.navigate('VisitorReason');
+    navigation.navigate('VisitorReason', {fullName, phoneNumber});
   };
 
   //Similarly handleback to navigate previous action

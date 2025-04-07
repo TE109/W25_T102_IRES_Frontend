@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // Use only this Picker
 
-const SelectVisitorBusinessScreen = ({ navigation }) => {
+const SelectVisitorBusinessScreen = ({ navigation, route }) => {
   const [selectedBusiness, setSelectedBusiness] = useState('');
+  const { fullName, phoneNumber, reason } = route.params;
 
   // List of businesses or people to visit by default
   const businesses = [
@@ -19,7 +20,8 @@ const SelectVisitorBusinessScreen = ({ navigation }) => {
       Alert.alert('Selection Required', 'Please select who you are visiting.');
       return;
     }
-    navigation.navigate('VisitorAppointment', { business: selectedBusiness });
+    console.log(selectedBusiness, fullName, phoneNumber, reason)
+    navigation.navigate('VisitorAppointment', { selectedBusiness, reason, fullName, phoneNumber });
   };
 
   const handleBack = () => {

@@ -37,8 +37,7 @@ const AddMoreBusiness = ({ navigation }) => {
       companyFloor: floorNumber,
       companyRoom: roomNumber,
       companyPhone: phoneNumber
-  
-  };
+    };
   var companyId = ''
 
      try{

@@ -1,15 +1,41 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 //Visitor Appoinment Screen
 //Also added handler functions as the previous screens for event Listeners
-const VisitorAppointmentScreen = ({ navigation }) => {
+const VisitorAppointmentScreen = ({ navigation, route }) => {
   const [appointmentTime, setAppointmentTime] = useState('');
+  const { fullName, phoneNumber, reason, selectedBusiness } = route.params;
 
   //navigate to Waiting for approval - visitor
   //appoinmentTime param
-  const handleNext = () => {
+  
+  const handleNext = async () => {
+    const userData ={
+      full_name: fullName, 
+      reason_for_visit: reason,
+      phoneNumber: phoneNumber
+    };
     // Proceed to the next step (or skip if no time entered)
-    navigation.navigate('WaitingForApprovalVisitor', { appointmentTime });
+      try{
+              const response = await fetch('http://10.0.2.2:3000/api/v1/visitor',{
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  
+                },
+                body:JSON.stringify(userData)
+              });
+              console.log(response.ok)
+              
+              if(response.ok){
+                Alert.alert('Company added successfully!');
+                navigation.navigate('WaitingForApprovalVisitor');
+              }else{
+                Alert.alert(`Error: ${response.message || 'something went wrong'}`);
+              }
+          }catch (error){
+              Alert.alert(`Error: ${error.message}`);
+          }
   };
 
   const handleBack = () => {

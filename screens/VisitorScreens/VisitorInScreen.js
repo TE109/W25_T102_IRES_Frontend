@@ -10,22 +10,21 @@ const VisitorInScreen = ({ navigation }) => {
   };
 
   const handleEnter = async(req, res) => {
-    
-
 
     try{
       console.log(JSON.stringify({accessCode: phoneNumber}))
       const response = await fetch('http://10.0.2.2:3000/api/v1/sms/verify',{
         method: "POST",
+        headers: {
+          'Content-Type': 'application/json', 
+        },
         body: JSON.stringify({accessCode: phoneNumber})});
 
-        const result = await response.json()
-        console.log(result)
-      
-      if (result.ok){
+       
+      if (response.ok){
         navigation.navigate('Confirmation', { type: 'visitor' });
       }
-      else{
+      else if(!response.ok){
         Alert.alert('Invalid Access Code', 'Please enter a valid access code.');
         return;
 
@@ -35,7 +34,6 @@ const VisitorInScreen = ({ navigation }) => {
     catch(error){
       Alert.alert(`Error: ${error.message}`);
     }
-    //navigation.navigate('Confirmation', { type: 'visitor' });
   };
 
   const handleBack = () => {
