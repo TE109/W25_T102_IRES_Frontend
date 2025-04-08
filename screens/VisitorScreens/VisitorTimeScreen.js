@@ -8,6 +8,8 @@ const VisitorAppointmentScreen = ({ navigation, route }) => {
 
   //navigate to Waiting for approval - visitor
   //appoinmentTime param
+
+    
   
   const handleNext = async () => {
     const userData ={
@@ -24,11 +26,8 @@ const VisitorAppointmentScreen = ({ navigation, route }) => {
                   
                 },
                 body:JSON.stringify(userData)
-              });
-              console.log(response.ok)
-              
+              });              
               if(response.ok){
-                Alert.alert('Company added successfully!');
                 navigation.navigate('WaitingForApprovalVisitor');
               }else{
                 Alert.alert(`Error: ${response.message || 'something went wrong'}`);

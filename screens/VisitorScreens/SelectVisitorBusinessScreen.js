@@ -1,18 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // Use only this Picker
 
 const SelectVisitorBusinessScreen = ({ navigation, route }) => {
   const [selectedBusiness, setSelectedBusiness] = useState('');
+  const [businesses, setBusinesses] = useState(route.params?.businesses || []);
+  
   const { fullName, phoneNumber, reason } = route.params;
 
-  // List of businesses or people to visit by default
-  const businesses = [
-    'Amazon',
-    'RBC',
-    'THJ',
-    'Cats co',
-  ];
+  useEffect(() =>{
+            const fetchBusinesses = async () => {
+              try {
+        
+                const response = await fetch('http://10.0.2.2:3000/api/v1/company', {
+                  method: 'GET',
+                  headers: {
+                  },
+                });
+        
+                const data = await response.json();    
+        
+                if (response.ok) {
+                  setBusinesses(data.data);        
+                }else{
+                  Alert.alert('Error', data.message || 'Failed to load businesses');
+                }
+              } catch (error) {
+                console.error('Fetch error:', error);
+                Alert.alert('Error', error.message || 'Something went wrong.');
+              }
+            };
+        
+            fetchBusinesses();
+          }, []);
+
+ 
 
   //handkeNext to validate the selection and navigate to Vistor Appoinment screen
   const handleNext = () => {
@@ -41,8 +63,8 @@ const SelectVisitorBusinessScreen = ({ navigation, route }) => {
             style={styles.picker}
           >
             <Picker.Item label="Select an option" value="" />
-            {businesses.map((business, index) => (
-              <Picker.Item key={index} label={business} value={business} />
+            {businesses.map((company, index) => (
+               <Picker.Item key={index} label={company.companyName} value={company.companyName} />
             ))}
           </Picker>
         </View>

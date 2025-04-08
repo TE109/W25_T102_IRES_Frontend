@@ -3,7 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 
 const EnterDeliveryCompanyScreen = ({ navigation, route }) => {
   const [companyName, setCompanyName] = useState('');
+  
   const { phoneNumber } = route.params; // Retrieve the phone number from the previous screen
+
+  
 
   const handleNext = () => {
     if (!companyName.trim()) {
@@ -12,7 +15,7 @@ const EnterDeliveryCompanyScreen = ({ navigation, route }) => {
     }
   
     // Navigate to SelectDeliveryCompanyScreen
-    navigation.navigate('SelectDeliveryCompany');
+    navigation.navigate('SelectDeliveryCompany', {phoneNumber, companyName});
   };
   const handleBack = () => {
     navigation.goBack(); // Navigate back to the previous screen
