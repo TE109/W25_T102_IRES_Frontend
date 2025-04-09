@@ -74,7 +74,7 @@ const EditBusinessScreen = ({ route, navigation }) => {
     // Call the function passed via navigation params
     if (typeof updateBusiness === 'function') {
       updateBusiness(updatedBusiness); // Call update function
-      navigation.goBack(); // Navigate back
+      navigation.navigate('EditBusinessOverview') //refresh and update
     } else {
       Alert.alert('Error', 'Unable to update business. Please try again.');
     }

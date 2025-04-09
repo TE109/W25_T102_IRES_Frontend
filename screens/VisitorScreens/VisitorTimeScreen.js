@@ -19,6 +19,7 @@ const VisitorAppointmentScreen = ({ navigation, route }) => {
     };
     // Proceed to the next step (or skip if no time entered)
       try{
+        
               const response = await fetch('http://10.0.2.2:3000/api/v1/visitor',{
                 method: 'POST',
                 headers: {
@@ -28,7 +29,7 @@ const VisitorAppointmentScreen = ({ navigation, route }) => {
                 body:JSON.stringify(userData)
               });              
               if(response.ok){
-                navigation.navigate('WaitingForApprovalVisitor');
+                navigation.navigate('WaitingForApprovalVisitor', {phoneNumber});
               }else{
                 Alert.alert(`Error: ${response.message || 'something went wrong'}`);
               }

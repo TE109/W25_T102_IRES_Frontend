@@ -59,7 +59,7 @@ const SelectDeliveryCompanyScreen = ({ navigation, route }) => {
                 body:JSON.stringify(deliveryData)
               });              
               if(response.ok){
-                navigation.navigate('WaitingForApprovalDelivery');
+                navigation.navigate('WaitingForApprovalDelivery', {phoneNumber});
               }else{
                 Alert.alert(`Error: ${response.message || 'something went wrong'}`);
               }

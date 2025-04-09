@@ -1,10 +1,75 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+
+import { View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 
 const WaitingForApprovalVisitorScreen =({ navigation, route }) => {
+
+const [access, setAccess] = useState(route.params?.businesses || []);
+const { phoneNumber} = route.params;
+  useEffect(() =>{
+            const fetchAccessCode = async () => {
+              
+              try {
+        
+                const response = await fetch('http://10.0.2.2:3000/api/v1/access/all-records', {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                });
+        
+                const data = await response.json();    
+                //console.log(data.accessRecords[0].accessCode)
+        
+                if (response.ok) {
+                  setAccess(data.accessRecords[0].accessCode);  
+                  //console.log(access)      
+                }else{
+                  Alert.alert('Error', data.message || 'Failed to load businesses');
+                }
+              } catch (error) {
+                console.error('Fetch error:', error);
+                Alert.alert('Error', error.message || 'Something went wrong.');
+              }
+            };
+        
+            fetchAccessCode();
+            
+
+            const sendAccess = async () => {
+              try {
+                //console.log(access)
+                const response = await fetch('http://10.0.2.2:3000/api/v1/sms/send-message', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json', 
+                  },
+                  body: JSON.stringify({
+                    body: `Your access code is ${access}`, 
+                    to: String(phoneNumber),
+                  }),
+                });
+              } catch (error) {
+                console.error('Fetch error:', error);
+                Alert.alert('Error', error.message || 'Something went wrong.');
+              }
+              console.log("check")
+            };
+
+            sendAccess();
+
+            
+          }, []);
+
+          
+
+
+
   const handleGoToMain = () => {
     navigation.navigate('CheckIn'); // Navigate to the main screen
   };
+
+  
 
   
 
@@ -20,7 +85,7 @@ const WaitingForApprovalVisitorScreen =({ navigation, route }) => {
       </Text>
       <TouchableOpacity style={styles.button} onPress={handleGoToMain}>
         <Text style={styles.buttonText}>Main Screen</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>     
     </View>
   );
 };
