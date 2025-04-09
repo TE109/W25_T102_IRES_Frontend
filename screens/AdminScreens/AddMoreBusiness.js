@@ -150,7 +150,11 @@ const AddMoreBusiness = ({ navigation }) => {
       />
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+          style={[styles.button, businesses.length > 0 ? styles.nextButton : styles.disabledButton]}
+          onPress={handleNext}
+          disabled={businesses.length === 0}
+        >
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity
