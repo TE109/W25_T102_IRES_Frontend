@@ -42,7 +42,6 @@ const SelectVisitorBusinessScreen = ({ navigation, route }) => {
       Alert.alert('Selection Required', 'Please select who you are visiting.');
       return;
     }
-    console.log(selectedBusiness, fullName, phoneNumber, reason)
     navigation.navigate('VisitorAppointment', { selectedBusiness, reason, fullName, phoneNumber });
   };
 

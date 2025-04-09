@@ -22,7 +22,7 @@ const SelectDeliveryCompanyScreen = ({ navigation, route }) => {
             });
     
             const data = await response.json();
-            console.log(data.data[0].companyName)
+            
 
     
             if (response.ok) {
