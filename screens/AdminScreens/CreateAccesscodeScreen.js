@@ -53,7 +53,7 @@ const CreateAccesscodeScreen = ({ navigation }) => {
         <Text style={styles.homeButtonText}>🏠 Admin</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>New access cde created</Text>
+      <Text style={styles.title}>New access code created</Text>
       <Text style={styles.description}>
       Your new access code is:
       </Text>
