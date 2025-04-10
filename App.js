@@ -33,7 +33,7 @@ import FinishAccountSetupScreen from './screens/AdminScreens/FinishAccountSetupS
 import AdminMenuScreen from './screens/AdminScreens/AdminMenuScreen';
 import CheckInIntroductionScreen from './screens/AdminScreens/CheckInIntroductionScreen';
 import AccountInfoScreen from './screens/AdminScreens/AccountInfoScreen';
-import SupportScreen from './screens/AdminScreens/SupportScreen';
+import CreateAccesscodeScreen from './screens/AdminScreens/CreateAccesscodeScreen';
 import EditBusinessOverview from './screens/AdminScreens/EditBusinessOverview';
 import AddMoreBusiness from './screens/AdminScreens/AddMoreBusiness'
 
@@ -78,7 +78,7 @@ export default function App() {
         <Stack.Screen name="AdminMenuScreen" component={AdminMenuScreen} />
         <Stack.Screen name="CheckInIntroductionScreen" component={CheckInIntroductionScreen} options={{ title: 'Check-In' }}/>
         <Stack.Screen name="AccountInfoScreen" component={AccountInfoScreen} />
-        <Stack.Screen name="SupportScreen" component={SupportScreen} />
+        <Stack.Screen name="CreateAccesscodeScreen" component={CreateAccesscodeScreen} />
         <Stack.Screen name="EditBusinessOverview" component={EditBusinessOverview}/>
         <Stack.Screen name="AddMoreBusiness" component={AddMoreBusiness}/>
       </Stack.Navigator>

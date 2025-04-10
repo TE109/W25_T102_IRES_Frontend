@@ -37,9 +37,9 @@ const AdminMenuScreen = ({ navigation }) => {
         {/* Support Button */}
         <TouchableOpacity
           style={styles.menuButton}
-          onPress={() => navigation.navigate('SupportScreen')}
+          onPress={() => navigation.navigate('CreateAccesscodeScreen')}
         >
-          <Text style={styles.iconPlaceholder}>🚪</Text>
+          <Text style={styles.iconPlaceholder}>🔐</Text>
           <Text style={styles.menuText}>Create new access code</Text>
         </TouchableOpacity>
       </View>
