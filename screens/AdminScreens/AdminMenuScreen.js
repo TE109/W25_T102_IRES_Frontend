@@ -39,8 +39,8 @@ const AdminMenuScreen = ({ navigation }) => {
           style={styles.menuButton}
           onPress={() => navigation.navigate('SupportScreen')}
         >
-          <Text style={styles.iconPlaceholder}>📩</Text>
-          <Text style={styles.menuText}>Support</Text>
+          <Text style={styles.iconPlaceholder}>🚪</Text>
+          <Text style={styles.menuText}>Create new access code</Text>
         </TouchableOpacity>
       </View>
     </View>

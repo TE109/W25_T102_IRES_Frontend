@@ -1,11 +1,46 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import * as Clipboard from 'expo-clipboard';
+
 
 const SupportScreen = ({ navigation }) => {
+  const [newAccesscode, setnewAccesscode] = useState('');
+
+  useEffect(() => {
+    createAccessCode();
+
+  
+  },[]);
+
+  const createAccessCode = async () => {
+    try {
+      
+      const response = await fetch('http://10.0.2.2:3000/api/v1/access/create-access', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({type: "visitor"})
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setnewAccesscode(data.access.accessCode)
+      } else {
+        Alert.alert('Error', data.message || 'Failed to load access code');
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+      Alert.alert('Error', error.message || 'Something went wrong.');
+    }
+  };
+
   const handleHome = () => {
     navigation.navigate('AdminMenuScreen');
   };
 
+  //onPress={() => copyText(newAccesscode)}
   return (
     <View style={styles.container}>
       {/* Home Button */}
@@ -13,14 +48,16 @@ const SupportScreen = ({ navigation }) => {
         <Text style={styles.homeButtonText}>🏠 Admin</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>Support</Text>
+      <Text style={styles.title}>New access code created</Text>
       <Text style={styles.description}>
-        If you need assistance or have any inquiries, please contact us at:
+      Your new access code is:
       </Text>
-      <Text style={styles.email}>support@ires.com</Text>
-      <Text style={styles.footer}>
-        We are here to assist you with any issues or questions regarding the IRes system.
-      </Text>
+      <Text style={styles.email}>{newAccesscode}</Text>
+        
+      <TouchableOpacity style={styles.button} onPress={() => Clipboard.setString(newAccesscode)}>
+        <Text style={styles.buttonText}>Copy</Text>
+      </TouchableOpacity>
+
     </View>
   );
 };
@@ -65,6 +102,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#007BFF',
     marginBottom: 20,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#D3D3D3',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  disabledButton: {
+    backgroundColor: '#A9A9A9', // Dimmed color for disabled button
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
     textAlign: 'center',
   },
   footer: {
