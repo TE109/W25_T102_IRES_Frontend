@@ -55,7 +55,7 @@ const SupportScreen = ({ navigation }) => {
       <Text style={styles.email}>{newAccesscode}</Text>
         
       <TouchableOpacity style={styles.button} onPress={() => Clipboard.setString(newAccesscode)}>
-        <Text style={styles.buttonText}>Copy</Text>
+        <Text style={styles.buttonText}>📋Copy</Text>
       </TouchableOpacity>
 
     </View>
