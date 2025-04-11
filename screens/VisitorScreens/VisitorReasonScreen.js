@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
 //Visitor Reason Screen
-const VisitorReasonScreen = ({ navigation }) => {
+const VisitorReasonScreen = ({ navigation, route }) => {
   const [reason, setReason] = useState('');
+  const { fullName, phoneNumber } = route.params;
 
   const handleNext = () => {
     if (!reason.trim()) {
@@ -11,7 +12,7 @@ const VisitorReasonScreen = ({ navigation }) => {
       return;
     }
     // Navigate to the confirmation or next step
-    navigation.navigate('SelectVisitorBusiness', { reason });
+    navigation.navigate('SelectVisitorBusiness', { reason, fullName, phoneNumber });
   };
 
   const handleBack = () => {

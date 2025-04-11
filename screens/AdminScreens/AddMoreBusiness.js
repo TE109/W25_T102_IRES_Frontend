@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {getToken} from './TokenStorage';
+import {getToken} from '../TokenStorage';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
 
 const AddMoreBusiness = ({ navigation }) => {
   const [businesses, setBusinesses] = useState([]);
+  const [businessId, setBusinessId] = useState(''); 
   const [businessName, setBusinessName] = useState('');
   const [floorNumber, setFloorNumber] = useState('');
   const [roomNumber, setRoomNumber] = useState('');
@@ -32,13 +33,12 @@ const AddMoreBusiness = ({ navigation }) => {
     }
 
     const companyData ={
-      
       companyName: businessName,
       companyFloor: floorNumber,
       companyRoom: roomNumber,
       companyPhone: phoneNumber
-  
-  };
+    };
+  var companyId = ''
 
      try{
         const response = await fetch('http://10.0.2.2:3000/api/v1/company',{
@@ -52,6 +52,9 @@ const AddMoreBusiness = ({ navigation }) => {
         });
         
         const result = await response.json();
+        companyId = result._id
+        //console.log(`add ${result._id}`)
+      
   
         if(response.ok){
           Alert.alert('Company added successfully!');
@@ -64,14 +67,19 @@ const AddMoreBusiness = ({ navigation }) => {
       }
   
     const newBusiness = {
-      id: Date.now().toString(),
+      id: companyId,
       name: businessName,
       floor: floorNumber || 'N/A',
       room: roomNumber || 'N/A',
       phone: phoneNumber,
     };
 
+    //console.log(`add2 ${newBusiness.id}`)
+  
+   
+
     setBusinesses([...businesses, newBusiness]);
+    setBusinessId('');
     setBusinessName('');
     setFloorNumber('');
     setRoomNumber('');
@@ -85,6 +93,10 @@ const AddMoreBusiness = ({ navigation }) => {
     }
     navigation.navigate('EditBusinessOverview', { businesses });
   };
+
+  const handleBack = () => {
+    navigation.navigate('EditBusinessOverview', { businesses });
+  }
 
   return (
     <View style={styles.container}>
@@ -140,7 +152,10 @@ const AddMoreBusiness = ({ navigation }) => {
       />
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+          style={[styles.button]}
+          onPress={handleBack}
+        >
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
         <TouchableOpacity

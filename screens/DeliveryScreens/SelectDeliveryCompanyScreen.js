@@ -1,32 +1,73 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Button } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // For dropdown functionality
 
 //Added default data of company located inside our building
 //Use useState to handle inputs
-const SelectDeliveryCompanyScreen = ({ navigation }) => {
+const SelectDeliveryCompanyScreen = ({ navigation, route }) => {
   const [selectedCompany, setSelectedCompany] = useState('');
+  const [businesses, setBusinesses] = useState(route.params?.businesses || []);
+  
+  const { phoneNumber, companyName} = route.params;
 
-  // List of companies by default at the building
-  const companies = [
-    'Amazon',
-    'RBC',
-    'THJ',
-    'Cats co'
-  ];
+
+  useEffect(() =>{
+        const fetchBusinesses = async () => {
+          try {
+    
+            const response = await fetch('http://10.0.2.2:3000/api/v1/company', {
+              method: 'GET',
+              headers: {
+              },
+            });
+    
+            const data = await response.json();
+            
+
+    
+            if (response.ok) {
+              setBusinesses(data.data);        
+            }else{
+              Alert.alert('Error', data.message || 'Failed to load businesses');
+            }
+          } catch (error) {
+            console.error('Fetch error:', error);
+            Alert.alert('Error', error.message || 'Something went wrong.');
+          }
+        };
+    
+        fetchBusinesses();
+      }, []);
+
+
 
   //Similar concept using handleNext and handleBack for event Listeners
   //Validation and navigate to Waiting for Approval-Devlivery
 
-  const handleNext = () => {
-    if (!selectedCompany) {
-      Alert.alert('Company Not Selected', 'Please select a company to proceed.');
-      return;
-    }
-  
-    // Navigate to the WaitingForApprovalDeliveryScreen
-    navigation.navigate('WaitingForApprovalDelivery');
-  };
+  const handleNext = async () => {
+    const deliveryData ={
+      delivery_company: companyName, 
+      phonenumber: phoneNumber,
+      companyName: selectedCompany
+    };
+      try{
+              const response = await fetch('http://10.0.2.2:3000/api/v1/delivery',{
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  
+                },
+                body:JSON.stringify(deliveryData)
+              });              
+              if(response.ok){
+                navigation.navigate('WaitingForApprovalDelivery', {phoneNumber});
+              }else{
+                Alert.alert(`Error: ${response.message || 'something went wrong'}`);
+              }
+          }catch (error){
+              Alert.alert(`Error: ${error.message}`);
+          }
+  }; 
   
 
   const handleBack = () => {
@@ -44,8 +85,8 @@ const SelectDeliveryCompanyScreen = ({ navigation }) => {
             onValueChange={(itemValue) => setSelectedCompany(itemValue)}
           >
             <Picker.Item label="Select a company..." value="" />
-            {companies.map((company, index) => (
-              <Picker.Item key={index} label={company} value={company} />
+            {businesses.map((company, index) => (
+              <Picker.Item key={index} label={company.companyName} value={company.companyName} />
             ))}
           </Picker>
         </View>

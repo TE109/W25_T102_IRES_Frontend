@@ -1,7 +1,62 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const WaitingForApprovalDeliveryScreen = ({ navigation }) => {
+const WaitingForApprovalDeliveryScreen = ({ navigation, route }) => {
+
+  const [access, setAccess] = useState(null);
+  const { phoneNumber} = route.params;
+  useEffect(() => {
+    const fetchAccessCode = async () => {
+      try {
+        const response = await fetch('http://10.0.2.2:3000/api/v1/access/all-records', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          const code = data.accessRecords[0].accessCode;
+          setAccess(code);
+        } else {
+          Alert.alert('Error', data.message || 'Failed to load access code');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        Alert.alert('Error', error.message || 'Something went wrong.');
+      }
+    };
+  
+    fetchAccessCode();
+  }, []);
+
+  useEffect(() => {
+    if (!access) return; 
+  
+    const sendAccess = async () => {
+      try {
+        const response = await fetch('http://10.0.2.2:3000/api/v1/sms/send-message', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            body: `Your access code is ${access}`,
+            to: String(phoneNumber),
+          }),
+        });
+      } catch (error) {
+        console.error('SMS send error:', error);
+        Alert.alert('Error', error.message || 'Something went wrong.');
+      }
+    };
+  
+    sendAccess();
+  }, [access]);  
+  
+    
   const handleMainScreen = () => {
     navigation.navigate('CheckIn'); // Navigate  to the checkin screen
   };

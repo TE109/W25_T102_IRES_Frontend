@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
-
+import {getToken} from '../TokenStorage';
+var mongoose = require('mongoose');
 const EditBusinessOverview = ({ navigation, route }) => {
   const [businesses, setBusinesses] = useState(route.params?.businesses || []);
 
@@ -10,10 +11,22 @@ const EditBusinessOverview = ({ navigation, route }) => {
 
   const handleEdit = (index) => {
     const businessToEdit = businesses[index];
-    navigation.navigate('EditBusinessScreen', { business: businessToEdit, updateBusiness: updateBusiness });
+    if (!businessToEdit) {
+      console.error('Error: businessToEdit is undefined');
+      return;
+    }
+
+    //console.log('Navigating with:', businessToEdit);
+    navigation.navigate('EditBusinessScreen', { 
+      business: businessToEdit, 
+      updateBusiness 
+    });
   };
 
-  const handleDelete = (index) => {
+  const handleDelete = async (index) => {
+    const business = businesses[index];
+    const token = await getToken();
+  
     Alert.alert(
       'Delete Business',
       'Are you sure you want to delete this business?',
@@ -22,31 +35,81 @@ const EditBusinessOverview = ({ navigation, route }) => {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => {
-            const updatedBusinesses = [...businesses];
-            updatedBusinesses.splice(index, 1);
-            setBusinesses(updatedBusinesses);
+          onPress: async () => {
+            try {
+              const response = await fetch(`http://10.0.2.2:3000/api/v1/company/${business._id}`, {
+                method: 'DELETE',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                },
+              });
+  
+              const result = await response.json();
+  
+              if (response.ok) {
+                const updatedBusinesses = [...businesses];
+                updatedBusinesses.splice(index, 1);
+                setBusinesses(updatedBusinesses);
+                Alert.alert('Business deleted successfully!');
+              } else {
+                Alert.alert(`Error: ${result.message || 'Something went wrong'}`);
+              }
+            } catch (error) {
+              Alert.alert(`Error: ${error.message}`);
+            }
           },
         },
       ]
     );
   };
-
-  const updateBusiness = (updatedBusiness) => {
+  
+  
+  const updateBusiness = async (updatedBusiness) => {
     const updatedBusinesses = businesses.map((business) =>
-      business.id === updatedBusiness.id ? updatedBusiness : business
+      business._id === updatedBusiness._id ? updatedBusiness : business
     );
+    //console.log(`updateBusiness ${business.id}`)
     setBusinesses(updatedBusinesses);
+    
   };
+
+  useEffect(() =>{
+    const fetchBusinesses = async () => {
+      try {
+        const token = await getToken();
+
+        const response = await fetch('http://10.0.2.2:3000/api/v1/company', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+        //console.log(data.data)
+
+        if (response.ok) {
+          setBusinesses(data.data);
+        }else{
+          Alert.alert('Error', data.message || 'Failed to load businesses');
+        }
+      } catch (error) {
+        console.error('Fetch error:', error);
+        Alert.alert('Error', error.message || 'Something went wrong.');
+      }
+    };
+
+    fetchBusinesses();
+  }, []);
 
   const renderBusinessItem = ({ item, index }) => (
     <View style={styles.businessCard}>
-      <Text style={styles.businessName}>{item.name}</Text>
+      <Text style={styles.businessName}>{item.companyName}</Text>
       <Text style={styles.businessDetails}>
-        {item.floor ? `On the ${item.floor} floor.` : ''}
-        {item.room ? ` Room number ${item.room}.` : ''}
+        {item.companyFloor ? `Floor ${item.companyFloor}.` : ''}
+        {item.companyRoom ? ` Room number ${item.companyRoom}.` : ''}
       </Text>
-      <Text style={styles.businessPhone}>{item.phone}</Text>
+      <Text style={styles.businessPhone}>{item.companyPhone}</Text>
       <View style={styles.cardButtonContainer}>
         <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(index)}>
           <Text style={styles.editButtonText}>Edit</Text>
@@ -60,14 +123,14 @@ const EditBusinessOverview = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
+      <Text style={styles.title}>Businesses</Text>
       <Text style={styles.subtitle}>
         Review the information for each business or company. Click the 'Edit' button to add or update details. To remove a business or company, click the 'Delete' button.
       </Text>
       <FlatList
         data={businesses}
         renderItem={renderBusinessItem}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id || item._id || item.name}
         style={styles.list}
       />
       <View style={styles.buttonContainer}>

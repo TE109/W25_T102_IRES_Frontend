@@ -55,7 +55,7 @@ const CreateAccountScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
+      <Text style={styles.title}>Add Business Details</Text>
       <Text style={styles.instructions}>
         Please enter each business or company located within this facility, along with the corresponding room or floor number. 
         Don’t forget to click the 'Add' button to save each entry. Type 0 for floor or room number if it doesn't apply.

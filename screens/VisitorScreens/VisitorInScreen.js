@@ -9,13 +9,31 @@ const VisitorInScreen = ({ navigation }) => {
     navigation.navigate('RequestVisitorCode');
   };
 
-  const handleEnter = () => {
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
-      return;
+  const handleEnter = async(req, res) => {
+
+    try{
+
+      const response = await fetch('http://10.0.2.2:3000/api/v1/sms/verify',{
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({accessCode: phoneNumber})});
+
+       
+      if (response.ok){
+        navigation.navigate('Confirmation', { type: 'visitor' });
+      }
+      else if(!response.ok){
+        Alert.alert('Invalid Access Code', 'Please enter a valid access code.');
+        return;
+
+      }
+      }
+    
+    catch(error){
+      Alert.alert(`Error: ${error.message}`);
     }
-    navigation.navigate('Confirmation', { type: 'visitor' });
   };
 
   const handleBack = () => {
@@ -30,11 +48,11 @@ const VisitorInScreen = ({ navigation }) => {
       </Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter phone number"
+        placeholder="Enter access code"
         keyboardType="number-pad"
         value={phoneNumber}
         onChangeText={setPhoneNumber}
-        maxLength={10}
+        
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleBack}>

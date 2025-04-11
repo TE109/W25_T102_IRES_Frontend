@@ -27,13 +27,13 @@ import CreatePasswordScreen from './screens/LoginScreens/CreatePasswordScreen';
 import EnterPhoneNumberScreen from './screens/LoginScreens/EnterPhoneNumberScreen';
 import EnterVerificationCodeScreen from './screens/LoginScreens/EnterVerificationCodeScreen';
 import AddBusinessDetailsScreen from './screens/AdminScreens/AddBusinessDetailsScreen';
-import BusinessOverviewScreen from './screens/AdminScreens/BusinessOverviewScreen';
+//import BusinessOverviewScreen from './screens/AdminScreens/BusinessOverviewScreen';
 import EditBusinessScreen from './screens/AdminScreens/EditBusinessScreen';
 import FinishAccountSetupScreen from './screens/AdminScreens/FinishAccountSetupScreen';
 import AdminMenuScreen from './screens/AdminScreens/AdminMenuScreen';
 import CheckInIntroductionScreen from './screens/AdminScreens/CheckInIntroductionScreen';
 import AccountInfoScreen from './screens/AdminScreens/AccountInfoScreen';
-import SupportScreen from './screens/AdminScreens/SupportScreen';
+import CreateAccesscodeScreen from './screens/AdminScreens/CreateAccesscodeScreen';
 import EditBusinessOverview from './screens/AdminScreens/EditBusinessOverview';
 import AddMoreBusiness from './screens/AdminScreens/AddMoreBusiness'
 
@@ -73,13 +73,12 @@ export default function App() {
         <Stack.Screen name="EnterPhoneNumber" component={EnterPhoneNumberScreen} />
         <Stack.Screen name="EnterVerificationCode" component={EnterVerificationCodeScreen}/>
         <Stack.Screen name="AddBusinessDetails" component={AddBusinessDetailsScreen} />
-        <Stack.Screen name="BusinessOverview" component={BusinessOverviewScreen} />
         <Stack.Screen name="EditBusinessScreen" component={EditBusinessScreen}/>
         <Stack.Screen name="FinishAccountSetup" component={FinishAccountSetupScreen} />
         <Stack.Screen name="AdminMenuScreen" component={AdminMenuScreen} />
         <Stack.Screen name="CheckInIntroductionScreen" component={CheckInIntroductionScreen} options={{ title: 'Check-In' }}/>
         <Stack.Screen name="AccountInfoScreen" component={AccountInfoScreen} />
-        <Stack.Screen name="SupportScreen" component={SupportScreen} />
+        <Stack.Screen name="CreateAccesscodeScreen" component={CreateAccesscodeScreen} />
         <Stack.Screen name="EditBusinessOverview" component={EditBusinessOverview}/>
         <Stack.Screen name="AddMoreBusiness" component={AddMoreBusiness}/>
       </Stack.Navigator>

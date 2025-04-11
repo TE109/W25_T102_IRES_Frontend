@@ -78,14 +78,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '60%',
+    
   },
   button: {
     backgroundColor: '#D3D3D3',
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 8,
+    marginRight:10,
     alignItems: 'center',
-    width: '45%',
+    width: '50%',
   },
   buttonText: {
     fontSize: 16,
