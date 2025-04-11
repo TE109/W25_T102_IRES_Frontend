@@ -96,6 +96,10 @@ const AddMoreBusiness = ({ navigation }) => {
     navigation.navigate('EditBusinessOverview', { businesses });
   };
 
+  const handleBack = () => {
+    navigation.navigate('EditBusinessOverview', { businesses });
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Add Business</Text>
@@ -151,9 +155,8 @@ const AddMoreBusiness = ({ navigation }) => {
 
       <View style={styles.buttonContainer}>
       <TouchableOpacity
-          style={[styles.button, businesses.length > 0 ? styles.nextButton : styles.disabledButton]}
-          onPress={handleNext}
-          disabled={businesses.length === 0}
+          style={[styles.button]}
+          onPress={handleBack}
         >
           <Text style={styles.buttonText}>Back</Text>
         </TouchableOpacity>
