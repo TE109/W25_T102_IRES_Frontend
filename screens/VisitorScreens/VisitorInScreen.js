@@ -12,7 +12,7 @@ const VisitorInScreen = ({ navigation }) => {
   const handleEnter = async(req, res) => {
 
     try{
-      console.log(JSON.stringify({accessCode: phoneNumber}))
+
       const response = await fetch('http://10.0.2.2:3000/api/v1/sms/verify',{
         method: "POST",
         headers: {

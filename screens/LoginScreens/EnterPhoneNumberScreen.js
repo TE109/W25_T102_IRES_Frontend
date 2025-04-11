@@ -11,7 +11,7 @@ const EnterPhoneNumberScreen = ({ route, navigation }) => {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
     }
-    console.log({email}, {password}, {phoneNumber})
+
     navigation.navigate('AdminMenuScreen');
 
     try{

@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ToastAndroid} from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 
 
-const SupportScreen = ({ navigation }) => {
+const CreateAccesscodeScreen = ({ navigation }) => {
   const [newAccesscode, setnewAccesscode] = useState('');
 
   useEffect(() => {
@@ -40,6 +40,11 @@ const SupportScreen = ({ navigation }) => {
     navigation.navigate('AdminMenuScreen');
   };
 
+  const copyCode = () =>{
+    Clipboard.setString(newAccesscode)
+    ToastAndroid.show('Code copied to clipboard', ToastAndroid.SHORT);
+  };
+
   //onPress={() => copyText(newAccesscode)}
   return (
     <View style={styles.container}>
@@ -54,8 +59,8 @@ const SupportScreen = ({ navigation }) => {
       </Text>
       <Text style={styles.email}>{newAccesscode}</Text>
         
-      <TouchableOpacity style={styles.button} onPress={() => Clipboard.setString(newAccesscode)}>
-        <Text style={styles.buttonText}>📋Copy</Text>
+      <TouchableOpacity style={styles.button} onPress={copyCode}>
+        <Text style={styles.buttonText}>📋 Copy</Text>
       </TouchableOpacity>
 
     </View>
@@ -127,4 +132,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SupportScreen;
+export default CreateAccesscodeScreen;

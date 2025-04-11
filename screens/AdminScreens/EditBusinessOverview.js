@@ -15,7 +15,7 @@ const EditBusinessOverview = ({ navigation, route }) => {
       console.error('Error: businessToEdit is undefined');
       return;
     }
-    console.log(businessToEdit)
+
     //console.log('Navigating with:', businessToEdit);
     navigation.navigate('EditBusinessScreen', { 
       business: businessToEdit, 
