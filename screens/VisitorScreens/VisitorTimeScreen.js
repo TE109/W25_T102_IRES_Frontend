@@ -15,7 +15,9 @@ const VisitorAppointmentScreen = ({ navigation, route }) => {
     const userData ={
       full_name: fullName, 
       reason_for_visit: reason,
-      phoneNumber: phoneNumber
+      phoneNumber: phoneNumber,
+      appointment_time: appointmentTime,
+      companyName: selectedBusiness
     };
     // Proceed to the next step (or skip if no time entered)
       try{

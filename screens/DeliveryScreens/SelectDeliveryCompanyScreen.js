@@ -47,7 +47,8 @@ const SelectDeliveryCompanyScreen = ({ navigation, route }) => {
   const handleNext = async () => {
     const deliveryData ={
       delivery_company: companyName, 
-      phonenumber: phoneNumber
+      phonenumber: phoneNumber,
+      companyName: selectedCompany
     };
       try{
               const response = await fetch('http://10.0.2.2:3000/api/v1/delivery',{

@@ -79,8 +79,6 @@ const AddMoreBusiness = ({ navigation }) => {
    
 
     setBusinesses([...businesses, newBusiness]);
-    console.log(businesses)
-    console.log(newBusiness)
     setBusinessId('');
     setBusinessName('');
     setFloorNumber('');
